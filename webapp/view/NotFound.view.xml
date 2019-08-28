@@ -1,0 +1,4 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="imc.sap.mm.contageminventario.controller.NotFound" xmlns:html="http://www.w3.org/1999/xhtml">
+	<MessagePage showNavButton="true" navButtonPress=".onNavBack" />
+</mvc:View>

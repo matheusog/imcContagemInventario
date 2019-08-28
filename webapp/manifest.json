@@ -33,6 +33,12 @@
 		"supportedThemes": ["sap_hcb", "sap_belize"]
 	},
 	"sap.ui5": {
+		"rootView": {
+			"viewName":"imc.sap.mm.contageminventario.view.S0_App",
+			"type":"XML",
+			"async":true,
+			"id":"appStart"
+		},
 		"dependencies": {
 			"minUI5Version": "1.30.0",
 			"libs": {
@@ -61,6 +67,38 @@
 			"css": [{
 				"uri": "css/style.css"
 			}]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewPath": "imc.sap.mm.contageminventario.view",
+				"viewType": "XML",
+				"controlId": "appStart",
+				"controlAggregation": "pages",
+				"clearAggregation": false,
+				"transition": "slide",
+				"async": true,
+				"bypassed": {
+					"target": "s1MainScreen"
+				}
+			},
+			"routes": [
+				{
+					"name": "mainScreen",
+					"pattern": "cont_invent",
+					"target": [
+						"s1MainScreen"
+					]
+				}
+			],
+			"targets": {
+				"s1MainScreen": {
+					"viewId": "s1MainScreen",
+					"viewType": "XML",
+					"viewName": "S1_MainScreen",
+					"viewLevel": 1
+				}
+			}
 		}
 	}
 }

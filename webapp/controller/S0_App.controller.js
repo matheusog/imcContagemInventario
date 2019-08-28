@@ -1,10 +1,13 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller"
-], function(Controller) {
+	"imc/sap/mm/contageminventario/controller/BaseController"
+], function(BaseController) {
 	"use strict";
 
-	return Controller.extend("imc.sap.mm.contageminventario.controller.App", {
+	return BaseController.extend("imc.sap.mm.contageminventario.controller.S0_App", {
 
+		onInit: function(){
+			
+		}
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.
 		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
