@@ -1,0 +1,23 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="imc.sap.mm.contageminventario.controller.S1_SelectionScreen" xmlns:html="http://www.w3.org/1999/xhtml">
+		<Page>
+			
+				<content>
+						<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
+							<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Sincronizar">
+						
+							</GenericTile>
+							<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Contagem">
+								
+							</GenericTile>
+							<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Recontagem">
+								
+							</GenericTile>
+							<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Recuperar Contagem">
+								
+							</GenericTile>
+						</FlexBox>
+				</content>
+			
+		</Page>
+</mvc:View>

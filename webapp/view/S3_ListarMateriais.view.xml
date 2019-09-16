@@ -1,0 +1,35 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="imc.sap.mm.contageminventario.controller.S3_ListarMateriais" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Panel headerText="" class="sapUiResponsiveMargin" width="100%">
+		<content>
+			<Flexbox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
+				<MultiComboBox>
+					
+				</MultiComboBox>
+				<SearchField search="handleSearch"/>
+				<List
+					id="List"
+					items="{/ProductCollection}"
+					headerText="Products">
+					<items>
+						<ObjectListItem
+							title="{Name}"
+							type="Active"
+							press="onListItemPress"
+							number="{
+								parts:[{path:'Price'},{path:'CurrencyCode'}],
+								type: 'sap.ui.model.type.Currency',
+								formatOptions: {showMeasure: false}
+							}"
+							numberUnit="{CurrencyCode}">
+							<attributes>
+								<ObjectAttribute text="{WeightMeasure} {WeightUnit}" />
+								<ObjectAttribute text="{Width} x {Depth} x {Height} {DimUnit}" />
+							</attributes>
+						</ObjectListItem>
+					</items>
+				</List>
+			</Flexbox>
+		</content>
+	</Panel>
+</mvc:View>

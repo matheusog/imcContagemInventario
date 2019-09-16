@@ -10,10 +10,20 @@
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
 		"sourceTemplate": {
-			"id": "ui5template.basicSAPUI5ApplicationProject",
-			"version": "1.40.12"
+			"id": "servicecatalog.connectivityComponent",
+			"version": "0.0.0"
 		},
-		"ach": "MM"
+		"ach": "MM",
+		"dataSources": {
+			"Z_MM_TEST_CDS": {
+				"uri": "/sap/opu/odata/sap/Z_MM_TEST_CDS/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/metadata.xml"
+				}
+			}
+		}
 	},
 	"sap.ui": {
 		"technology": "UI5",
@@ -30,14 +40,17 @@
 			"tablet": true,
 			"phone": true
 		},
-		"supportedThemes": ["sap_hcb", "sap_belize"]
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_belize"
+		]
 	},
 	"sap.ui5": {
 		"rootView": {
-			"viewName":"imc.sap.mm.contageminventario.view.S0_App",
-			"type":"XML",
-			"async":true,
-			"id":"appStart"
+			"viewName": "imc.sap.mm.contageminventario.view.S0_App",
+			"type": "XML",
+			"async": true,
+			"id": "appStart"
 		},
 		"dependencies": {
 			"minUI5Version": "1.30.0",
@@ -64,9 +77,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -79,24 +94,37 @@
 				"transition": "slide",
 				"async": true,
 				"bypassed": {
-					"target": "s1MainScreen"
+					"target": "S1_MainScreen"
 				}
 			},
 			"routes": [
 				{
-					"name": "mainScreen",
-					"pattern": "cont_invent",
+					"name": "S1_MainScreen",
+					"pattern": "S1_MainScreen",
 					"target": [
-						"s1MainScreen"
+						"S1_MainScreen"
+					]
+				},
+				{
+					"name": "S2_Contagem",
+					"pattern": "S2_Contagem",
+					"target": [
+						"S2_Contagem"
 					]
 				}
 			],
 			"targets": {
-				"s1MainScreen": {
-					"viewId": "s1MainScreen",
+				"S1_MainScreen": {
+					"viewId": "S1_MainScreen",
 					"viewType": "XML",
 					"viewName": "S1_MainScreen",
 					"viewLevel": 1
+				},
+				"S2_Contagem": {
+					"viewId": "S2_Contagem",
+					"viewType": "XML",
+					"viewName": "S2_Contagem",
+					"viewLevel": 2
 				}
 			}
 		}

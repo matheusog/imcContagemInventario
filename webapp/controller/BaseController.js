@@ -1,8 +1,9 @@
 sap.ui.define([ 
 	"sap/ui/core/mvc/Controller", 
 	"sap/ui/core/routing/History",
-	"imc/sap/mm/contageminventario/util/Formatter"
-], function(Controller,History, Formatter) {
+	"imc/sap/mm/contageminventario/util/Formatter",
+	"sap/ui/model/json/JSONModel"
+], function(Controller,History, Formatter, JSONModel) {
 	"use strict";
 	
 	return Controller.extend("imc.sap.mm.contageminventario.controller.S0_App", {

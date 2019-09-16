@@ -1,8 +1,169 @@
-	<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
-	controllerName="imc.sap.mm.contageminventario.controller.S1_MainScreen" xmlns:html="http://www.w3.org/1999/xhtml">
-	<Page title="{i18n>s1_Title}">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="imc.sap.mm.contageminventario.controller.S1_MainScreen" xmlns:html="http://www.w3.org/1999/xhtml"
+	busy="{viewModel>busy}"
+	busyIndicatorDelay="{viewModel>busyDelay}"
+	visible="{viewModel>visible}">
+	<Page id="S1_Old" visible="false">
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S1_SelectionScreen"/>
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S2_Contagem" visible="false"/>
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S3_ContarMaterial" visible="false"/>
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S3_ListarMateriais" visible="false"/>
+	</Page>
+	
+	<Page id="S1_MainScreen">
 		<content>
-			<Button  />
+				<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Sincronizar">
+				
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Contagem" press="actionS1_tileContagem">
+						
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Recontagem" press="actionS1_tileRecontagem">
+						
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Recuperar Contagem" press="actionS1_tileRecuperarContagem">
+						
+					</GenericTile>
+				</FlexBox>
 		</content>
+	</Page>
+	
+	<Page id="S2_Contagem" visible="false">
+		<content>
+			<Flexbox alignItems="Center" justifyContent="Center" wrap="Wrap" direction="Column">
+				<Label text="Centro:" design="Bold"></Label>
+				<Label text="numero do Centro" design="Standard"></Label>
+				<Label text="Data: " labelFor="DP3" design="Bold"/>
+				<DatePicker
+					id="DP3"
+					displayFormat="short"
+					change="handleChange"
+					class="sapUiSmallMarginBottom"
+					editable="false"/>
+				<Label text="Material: " labelFor="txb_Codigo" design="Bold"/>
+				<Input
+					id="txb_Codigo"
+					type="Text"
+					placeholder="Código do material">
+				</Input>
+				<Button
+					id="btn_PesquisaMaterial"
+					text="Buscar Material"
+					type="Default"
+					width=""
+					press="onPressS2_PesquisaMaterial">
+				</Button>
+				<Button
+					id="btn_ListarMateriais"
+					text="Listar Materiais"
+					type="Default"
+					width=""
+					press="onPressS2_ListaMateriais">
+				</Button>
+			</Flexbox>
+		</content> 
+		<footer>
+			<OverflowToolbar>
+				<Button text="Voltar" type="Back" press="onPressS2_Back"/>
+				<ToolbarSpacer/>
+				<Button text="Salvar" type="Accept" />
+			</OverflowToolbar>
+		</footer>
+	</Page>
+	
+	<Page id="S3_ContarMaterial" visible="false">
+		<content>
+			<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
+				<Label text="Centro:" design="Bold"></Label>
+					<Input
+					id="txb_Codigo8"
+					type="Text"
+					placeholder="Código do material"
+					enabled="false">
+					</Input>
+				<Label text="Material:" design="Bold"></Label>
+				<Input
+					id="txb_Codigo2"
+					type="Text"
+					placeholder="Código do material"
+					enabled="false">
+				</Input>
+				<Label text="Descrição:" design="Bold"></Label>
+				<Input
+					id="txb_Codigo3"
+					type="Text"
+					placeholder="Código do material"
+					enabled="false">
+				</Input>
+				<Label text="UMB/UMR:" design="Bold"></Label>
+				<Input
+					id="txb_Codigo4"
+					type="Text"
+					placeholder="Código do material"
+					enabled="false">
+				</Input>
+				<Label text="Quantidade:" design="Bold"></Label>
+				<Input
+					id="txb_Codigo5"
+					type="Text"
+					placeholder="Código do material"
+					enabled="false">
+				</Input>
+				<Label text="Valor:" design="Bold"></Label>
+				<Input
+					id="txb_Codigo6"
+					type="Text"
+					placeholder="Código do material"
+					enabled="false">
+				</Input>
+			</FlexBox>
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<Button text="Cancelar" type="Back" press="onPressS3Contar_Cancel"/>
+				<ToolbarSpacer/>
+				<Button text="Salvar" type="Accept" />
+			</OverflowToolbar>
+		</footer>
+	</Page>
+	
+	<Page id="S3_ListarMateriais" visible="false">
+		<content>
+			<Flexbox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
+				<MultiComboBox>
+					
+				</MultiComboBox>
+				<SearchField search="handleSearch"/>
+				<List
+					id="List"
+					items="{/ProductCollection}"
+					headerText="Products">
+					<items>
+						<ObjectListItem
+							title="{Name}"
+							type="Active"
+							press="onListItemPress"
+							number="{
+								parts:[{path:'Price'},{path:'CurrencyCode'}],
+								type: 'sap.ui.model.type.Currency',
+								formatOptions: {showMeasure: false}
+							}"
+							numberUnit="{CurrencyCode}">
+							<attributes>
+								<ObjectAttribute text="{WeightMeasure} {WeightUnit}" />
+								<ObjectAttribute text="{Width} x {Depth} x {Height} {DimUnit}" />
+							</attributes>
+						</ObjectListItem>
+					</items>
+				</List>
+			</Flexbox>
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<Button text="Cancelar" type="Back" press="onPressS3Listar_Cancel"/>
+				<ToolbarSpacer/>
+			</OverflowToolbar>
+		</footer>
 	</Page>
 </mvc:View>
