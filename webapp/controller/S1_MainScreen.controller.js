@@ -25,6 +25,7 @@ sap.ui.define([
 			request.onload = function(){
 				var data = JSON.parse(this.response);
 				
+				
 				data.forEach(objectResp => {
 					console.log(objectResp.PhysicalInventoryDocument)
 				});
