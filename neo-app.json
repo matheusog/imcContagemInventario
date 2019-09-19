@@ -28,7 +28,7 @@
         "name": "IMC_SFD",
         "entryPath": "/sap/opu/odata"
       },
-      "description": "IMC Gateway/Fiori SFD"
+      "description": "IMC Gateway/Fiori SFD 150"
     }
   ],
   "sendWelcomeFileRedirect": true

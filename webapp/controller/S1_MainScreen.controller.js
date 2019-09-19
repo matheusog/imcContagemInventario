@@ -95,8 +95,8 @@ sap.ui.define([
 		_readData : function(sCentro) {
 			var sURL = 
 				sCentro ?
-					this._sServiceURL : // && "&$filter= Plant eq '" && sCentro && "'":
-					this._sServiceURL;
+					this._sServiceURL + this._sEntityInvent + "&$filter= Plant eq '" + sCentro + "'":
+					this._sServiceURL + this._sEntityInvent;
 				
 			var request = new XMLHttpRequest();
 			//request.setRequestHeader("Authorization", "Basic " + btoa("username:password"));
@@ -116,6 +116,8 @@ sap.ui.define([
 				}
 			};
 			request.send();
+			//var db = indexedDB.open("inventario2db", 1);
+			//var transaction = db.transaction(json, "readwrite");
 		},
 		
 		_routeMatched : function(oEvent) {

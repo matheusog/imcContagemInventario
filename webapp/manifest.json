@@ -15,8 +15,8 @@
 		},
 		"ach": "MM",
 		"dataSources": {
-			"Z_MM_TEST_CDS": {
-				"uri": "/sap/opu/odata/sap/Z_MM_TEST_CDS/",
+			"ZGW_MM_INVENTARIO_SRV": {
+				"uri": "/sap/opu/odata/sap/ZGW_MM_INVENTARIO_SRV/",
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
