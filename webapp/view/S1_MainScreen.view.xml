@@ -1,78 +1,173 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
-	controllerName="imc.sap.mm.contageminventario.controller.S1_MainScreen" xmlns:html="http://www.w3.org/1999/xhtml"
-	busy="{viewModel>busy}"
-	busyIndicatorDelay="{viewModel>busyDelay}"
-	visible="{viewModel>visible}">
+<mvc:View 
+	xmlns:core="sap.ui.core" 
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m"
+	xmlns:tnt="sap.tnt"
+	controllerName="imc.sap.mm.contageminventario.controller.S1_MainScreen" 
+	displayBlock="true"
+	busy="{viewMain>busy}"
+	busyIndicatorDelay="{viewMain>busyDelay}"
+	visible="{viewMain>visible}">
+	<!--
 	<Page id="S1_Old" visible="false">
-				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S1_SelectionScreen"/>
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S1_SelectionScreen" visible="true" />
 				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S2_Contagem" visible="false"/>
 				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S3_ContarMaterial" visible="false"/>
 				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S3_ListarMateriais" visible="false"/>
 	</Page>
+	-->
+	<tnt:ToolPage id="pageS1MainScreen">
+		<tnt:header>
+			<tnt:ToolHeader>
+				<Button id="sideNavigationToggleButton"
+						icon="sap-icon://menu2"
+						type="Transparent"
+						press=".onSideNavButtonPress">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow" />
+					</layoutData>
+				</Button>
+				<ToolbarSpacer/>
+				<Title text="{i18n>appTitle}" titleStyle="{= ${device>/system/phone} ? 'H4' : 'H2' }">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="Low"/>
+					</layoutData>
+				</Title>
+				<ToolbarSpacer/>
+				<Button 
+					type="Transparent"	
+					tooltip="{i18n>s1Configure}" 
+					icon="sap-icon://action-settings"
+					press="._onConfigPress">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow" />
+					</layoutData>
+				</Button>
+			</tnt:ToolHeader>	
+		</tnt:header>
+		<tnt:sideContent>
+			<tnt:SideNavigation>
+				<tnt:NavigationList>
+					<tnt:NavigationListItem text="{i18n>s1TileCont}" key="S2_Contagem" icon="sap-icon://home" select="._onNavItem"/>
+					<tnt:NavigationListItem text="{i18n>s1TileRecont}" key="S2_Contagem" icon="sap-icon://grid" select="._onNavItem"/>
+					<tnt:NavigationListItem text="{i18n>s1TileRecup}" key="S2_Contagem" icon="sap-icon://grid" select="._onNavItem"/>
+				</tnt:NavigationList>
+			</tnt:SideNavigation>
+		</tnt:sideContent>
+		<tnt:mainContents>
+			<NavContainer id="idAppControl">
+				<pages>
+				<Page id="empty" showHeader="false" showFooter="false"></Page>	
 	
-	<Page id="S1_MainScreen">
+<!--
+	<Page id="S1_MainScreen_Old" 
+		busy="{viewMain>/busy}"
+		busyIndicatorDelay="{viewMain>/busyDelay}"
+		title="{i18n>s1Title}"
+		visible="{viewMain>/visible}">
+		<headerContent>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button 
+					type="Transparent"	
+					tooltip="{i18n>s1Configure}" 
+					icon="sap-icon://action-settings"
+					press="._onConfigPress" />
+			</OverflowToolbar>
+		</headerContent>
 		<content>
 				<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
-					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Sincronizar">
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileSinc}">
 				
 					</GenericTile>
-					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Contagem" press="actionS1_tileContagem">
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileCont}" 
+								 press="actionS1_tileContagem">
 						
 					</GenericTile>
-					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Recontagem" press="actionS1_tileRecontagem">
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileRecont}" 
+								 press="actionS1_tileContagem">
 						
 					</GenericTile>
-					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Recuperar Contagem" press="actionS1_tileRecuperarContagem">
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileRecup}" 
+								 press="actionS1_tileContagem">
 						
 					</GenericTile>
 				</FlexBox>
 		</content>
 	</Page>
-	
-	<Page id="S2_Contagem" visible="false">
+	-->
+	<Page id="S2_Contagem" 
+		busy="{viewContagem>/busy}"
+		busyIndicatorDelay="{viewContagem>/busyDelay}"
+		navButtonPress="_back"
+		navButtonTooltip="{i18n>s2BtnVoltar}"
+		showHeader="false"
+		showNavButton="true"
+		title="{i18n>s2Title}"
+		visible="{viewContagem>/visible}">
+		<headerContent>
+			<!--
+			<OverflowToolbar>
+				<Button text="{i18n>s2BtnVoltar}" type="Back" press="onPressS2_Back"/>
+			</OverflowToolbar>
+			-->
+		</headerContent>
 		<content>
 			<Flexbox alignItems="Center" justifyContent="Center" wrap="Wrap" direction="Column">
-				<Label text="Centro:" design="Bold"></Label>
-				<Label text="numero do Centro" design="Standard"></Label>
-				<Label text="Data: " labelFor="DP3" design="Bold"/>
+				<Label text="{i18n>s2FieldCentro}" design="Bold" labelFor="txb_Centro" />
+				<Label text="{viewMain>/centro}" design="Standard"></Label>
+				<!--<Input
+					id="txb_Centro"
+					type="Text"
+					placeholder="Código do Centro" />-->
+				<Label text="{i18n>s2FieldData}" labelFor="DP3" design="Bold"/>
 				<DatePicker
 					id="DP3"
 					displayFormat="short"
 					change="handleChange"
 					class="sapUiSmallMarginBottom"
 					editable="false"/>
-				<Label text="Material: " labelFor="txb_Codigo" design="Bold"/>
+				<Label text="{i18n>s2FieldMaterial}" labelFor="txb_Codigo" design="Bold"/>
 				<Input
 					id="txb_Codigo"
 					type="Text"
-					placeholder="Código do material">
+					placeholder="{i18n>s2FldPhMaterial}">
 				</Input>
 				<Button
 					id="btn_PesquisaMaterial"
-					text="Buscar Material"
+					text="{i18n>s2BtnSearch}"
 					type="Default"
-					width=""
 					press="onPressS2_PesquisaMaterial">
 				</Button>
 				<Button
 					id="btn_ListarMateriais"
-					text="Listar Materiais"
+					text="{i18n>s2BtnList}"
 					type="Default"
-					width=""
 					press="onPressS2_ListaMateriais">
 				</Button>
 			</Flexbox>
 		</content> 
 		<footer>
 			<OverflowToolbar>
-				<Button text="Voltar" type="Back" press="onPressS2_Back"/>
 				<ToolbarSpacer/>
-				<Button text="Salvar" type="Accept" />
+				<Button text="{i18n>s2BtnSalvar}" type="Accept" />
 			</OverflowToolbar>
 		</footer>
 	</Page>
 	
-	<Page id="S3_ContarMaterial" visible="false">
+	<Page id="S3_ContarMaterial" 
+		busy="{viewContMaterial>/busy}"
+		busyIndicatorDelay="{viewContMaterial>/busyDelay}"
+		navButtonPress="_back"
+		navButtonTooltip="{i18n>s2BtnVoltar}"
+		showHeader="false"
+		showNavButton="true"
+		visible="{viewContMaterial>/visible}">
 		<content>
 			<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
 				<Label text="Centro:" design="Bold"></Label>
@@ -120,15 +215,25 @@
 			</FlexBox>
 		</content>
 		<footer>
+			<!--
 			<OverflowToolbar>
 				<Button text="Cancelar" type="Back" press="onPressS3Contar_Cancel"/>
 				<ToolbarSpacer/>
 				<Button text="Salvar" type="Accept" />
 			</OverflowToolbar>
+			-->
 		</footer>
+		
 	</Page>
 	
-	<Page id="S3_ListarMateriais" visible="false">
+	<Page id="S3_ListarMateriais" 
+		busy="{viewListaMaterial>/busy}"
+		busyIndicatorDelay="{viewListaMaterial>/busyDelay}"
+		navButtonPress="_back"
+		navButtonTooltip="{i18n>s2BtnVoltar}"
+		showHeader="false"
+		showNavButton="true"
+		visible="{viewListaMaterial>/visible}">
 		<content>
 			<Flexbox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
 				<MultiComboBox>
@@ -160,10 +265,18 @@
 			</Flexbox>
 		</content>
 		<footer>
+			<!--
 			<OverflowToolbar>
 				<Button text="Cancelar" type="Back" press="onPressS3Listar_Cancel"/>
 				<ToolbarSpacer/>
 			</OverflowToolbar>
+			-->
 		</footer>
-	</Page>
+	</Page>					
+				</pages>
+			</NavContainer>
+		</tnt:mainContents>
+		
+	</tnt:ToolPage>
+	
 </mvc:View>

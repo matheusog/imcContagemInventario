@@ -9,6 +9,8 @@ sap.ui.define([
 	return Controller.extend("imc.sap.mm.contageminventario.controller.S0_App", {
 		oFormatter: Formatter, 
 		
+		_sServiceURL: "/sap/opu/odata/sap/Z_MM_TEST_CDS/Z_MM_TEST?$format=json&sap-client=150", 
+		
 		getRouter : function() {
 			return this.getOwnerComponent().getRouter();
 		}, 
