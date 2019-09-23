@@ -3,10 +3,11 @@ sap.ui.define([
 	"sap/ui/core/UIcomponent", 
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
+	"sap/ui/Device",
 	"imc/sap/mm/contageminventario/model/models", 
 	"imc/sap/mm/contageminventario/model/formatter",
 	"sap/ui/util/Storage"
-], function(BaseController, UIcomponent, MessageBox, Filter, Models, Formatter,Storage) {
+], function(BaseController, UIcomponent, MessageBox, Filter, Device, Models, Formatter, Storage) {
 	"use strict";
 
 	return BaseController.extend("imc.sap.mm.contageminventario.controller.S1_MainScreen", {
@@ -88,12 +89,46 @@ sap.ui.define([
 			this.getView().setModel(this._oViewListaMaterial, "viewListaMaterial");
 		}, 
 		
+		_handleFilterDialogConfirm : function(oEvent) {
+			var oList = this.byId("listMaterial"),
+				oBinding = oList.getBinding("items"),
+				mParams = oEvent.getParameters(),
+				aFilters = [];
+			
+			if(oBinding.aFilters) {
+				aFilters = oBinding.aFilters;
+			}
+			
+			mParams.filterItems.forEach(function(oItem) {
+				var oFilter = undefined,
+					sPath = "UnitCount",
+					sOperator = sap.ui.model.FilterOperator.EQ,
+					sValue1 = "";	
+				if(oItem.getKey() === "contOrig"){
+					oFilter = new Filter(sPath, sOperator, sValue1, null);
+				} else if (oItem.getKey() === "contAlter") {
+					sOperator = sap.ui.model.FilterOperator.NE;
+					oFilter = new Filter(sPath, sOperator, sValue1, null);
+				}
+				if(oFilter){
+					aFilters.push(oFilter);
+				}
+				
+			});
+
+			oBinding.filter(aFilters);
+		}, 
+		
 		_handleSearchMaterial : function(oEvent) {
 			var sQuery = oEvent.getParameter("query");	
 			//var sQuery = oEvent.getSource().getValue();
+			var oBinding = oList.getBinding("items");
 			var aFilters = [];
 			var oList = this.byId("listMaterial"); 
 			
+			if(oBinding.aFilters) {
+				aFilters = oBinding.aFilters;
+			}
 			if (sQuery && sQuery.length > 0) {
 				var oFilter = new Filter({
 					filters: [
@@ -104,9 +139,7 @@ sap.ui.define([
 				}); 
 				aFilters.push(oFilter);
 			}
-
-			// update list binding
-			var oBinding = oList.getBinding("items");
+			
 			oBinding.filter(aFilters);
 		}, 
 		
@@ -215,6 +248,9 @@ sap.ui.define([
 			if (!this._oDialogCentro) {
 				this._oDialogCentro = 
 					sap.ui.xmlfragment("imc.sap.mm.contageminventario.view.fragment.F1_PopUpCentro", this);
+				if (Device.system.desktop) {
+					this._oDialogCentro.addStyleClass("sapUiSizeCompact");
+				}
 				this.getView().addDependent(this._oDialogCentro);
 			}
 			if(this._oViewMain.getProperty("/centro/Plant")) {
@@ -231,6 +267,19 @@ sap.ui.define([
 			var sCentro = this._oViewMain.getProperty("/centro/Plant");
 			this._readDataPlant(sCentro);
 		},
+		
+		_onFilterListPress : function(oEvent) {
+			if (!this._oFDialogList) {
+				this._oFDialogList = 
+					sap.ui.xmlfragment("imc.sap.mm.contageminventario.view.fragment.F2_MaterialListFilterDialog", this);
+				if (Device.system.desktop) {
+					this._oFDialogList.addStyleClass("sapUiSizeCompact");
+				}
+				this.getView().addDependent(this._oFDialogList);
+			}
+		
+			this._oFDialogList.open();	
+		}, 
 		
 		_onNavItem : function(oEvent) {
 			var oItem = oEvent.getParameter('item');
