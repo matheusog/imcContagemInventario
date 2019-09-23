@@ -6,7 +6,7 @@ sap.ui.define([
 ], function(Controller,History, Formatter, JSONModel) {
 	"use strict";
 	
-	return Controller.extend("imc.sap.mm.contageminventario.controller.S0_App", {
+	return Controller.extend("imc.sap.mm.contageminventario.controller.BaseController", {
 		oFormatter: Formatter, 
 		
 		_sServiceURL: "/sap/opu/odata/sap/ZGW_MM_INVENTARIO_SRV",

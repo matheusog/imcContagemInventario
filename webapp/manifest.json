@@ -26,7 +26,7 @@
 		}
 	},
 	"sap.ui": {
-		"fullWidth": true, 
+		"fullWidth": true,
 		"technology": "UI5",
 		"icons": {
 			"icon": "",
@@ -56,12 +56,12 @@
 		"dependencies": {
 			"minUI5Version": "1.30.0",
 			"libs": {
-				"sap.ui.core": {},
+				"sap.collaboration": {},
 				"sap.m": {},
+				"sap.ui.comp": {},
+				"sap.ui.core": {},
 				"sap.ui.layout": {},
 				"sap.ushell": {},
-				"sap.collaboration": {},
-				"sap.ui.comp": {},
 				"sap.uxap": {}
 			}
 		},
@@ -101,16 +101,9 @@
 			"routes": [
 				{
 					"name": "S1_MainScreen",
-					"pattern": "S1_MainScreen",
+					"pattern": "",
 					"target": [
 						"S1_MainScreen"
-					]
-				},
-				{
-					"name": "S2_Contagem",
-					"pattern": "S2_Contagem",
-					"target": [
-						"S2_Contagem"
 					]
 				}
 			],
@@ -120,12 +113,6 @@
 					"viewType": "XML",
 					"viewName": "S1_MainScreen",
 					"viewLevel": 1
-				},
-				"S2_Contagem": {
-					"viewId": "S2_Contagem",
-					"viewType": "XML",
-					"viewName": "S2_Contagem",
-					"viewLevel": 2
 				}
 			}
 		}

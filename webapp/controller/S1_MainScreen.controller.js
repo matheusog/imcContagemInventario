@@ -482,6 +482,7 @@ sap.ui.define([
 		},
 		
 		onPressS2_ListaMateriais: function(){
+			this._oViewListaMaterial.refresh();
 			this._navPage("S3_ListarMateriais", true);
 		}, 
 		

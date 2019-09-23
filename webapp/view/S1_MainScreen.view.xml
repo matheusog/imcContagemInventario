@@ -20,7 +20,7 @@
 	-->
 	<tnt:ToolPage id="pageS1MainScreen"
 		busy="{viewMain>/busy}"
-		busyDelay="{viewMain>/busyDelay}">
+		busyIndicatorDelay="{viewMain>/busyDelay}">
 		<tnt:header>
 			<tnt:ToolHeader>
 				<Button id="sideNavigationToggleButton"
@@ -61,56 +61,14 @@
 		<tnt:mainContents>
 			<NavContainer 
 				id="idAppControl"
-				initialPage="S1_empty"
-			>
+				initialPage="S1_empty" >
 				<pages>
 				<Page id="S1_empty" 
 					showHeader="false" 
 					showFooter="false"
 					busyIndicatorDelay="{viewMain>/busyDelay}"
 					busy="{viewMain>/busy}"></Page>	
-	
-<!--
-	<Page id="S1_MainScreen_Old" 
-		busy="{viewMain>/busy}"
-		busyIndicatorDelay="{viewMain>/busyDelay}"
-		title="{i18n>s1Title}"
-		visible="{viewMain>/visible}">
-		<headerContent>
-			<OverflowToolbar>
-				<ToolbarSpacer/>
-				<Button 
-					type="Transparent"	
-					tooltip="{i18n>s1Configure}" 
-					icon="sap-icon://action-settings"
-					press="._onConfigPress" />
-			</OverflowToolbar>
-		</headerContent>
-		<content>
-				<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
-					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
-								 header="{i18n>s1TileSinc}">
-				
-					</GenericTile>
-					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
-								 header="{i18n>s1TileCont}" 
-								 press="actionS1_tileContagem">
-						
-					</GenericTile>
-					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
-								 header="{i18n>s1TileRecont}" 
-								 press="actionS1_tileContagem">
-						
-					</GenericTile>
-					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
-								 header="{i18n>s1TileRecup}" 
-								 press="actionS1_tileContagem">
-						
-					</GenericTile>
-				</FlexBox>
-		</content>
-	</Page>
-	-->
+
 	<Page id="S2_Contagem" 
 		busy="{viewContagem>/busy}"
 		busyIndicatorDelay="{viewContagem>/busyDelay}"
@@ -149,7 +107,6 @@
 						model: 'viewContagem',
 						path: '/contagem/PhysInventoryPlannedCountDate', 
 						type: 'sap.ui.model.type.Date',
-                        formatter: '.oFormmater.formatStringOdataDate',
                         formatOptions: { 
                             style: 'medium', 
                             strictParsing: true
@@ -249,6 +206,10 @@
 						id="txb_Price"
 						text="{viewContMaterial>/material/AveragePrice}" />
 					<Label text="{i18n>s3ContColUnidade}" design="Bold" />
+					<Text
+						id="txb_Unidade"
+						visible="{= ${viewContMaterial>/unidades} &amp;&amp; ${viewContMaterial>/unidades}.length &lt;= 1 }"
+						text="{viewContMaterial>/material/UnitCount}" />					
 					<ComboBox
 						visible="{= ${viewContMaterial>/unidades} &amp;&amp; ${viewContMaterial>/unidades}.length &gt; 1 }"
 						value="{viewContMaterial>/material/UnitCount}"
@@ -257,10 +218,6 @@
 						}">
 						<core:Item key="{viewContMaterial>Unit}" text="{viewContMaterial>Unit}" />
 					</ComboBox>
-					<Text
-						id="txb_Unidade"
-						visible="{= ${viewContMaterial>/unidades} &amp;&amp; ${viewContMaterial>/unidades}.length &lt;= 1 }"
-						text="{viewContMaterial>/material/UnitCount}" />
 					<Label text="{i18n>s3ContColQuantity}" design="Bold" />
 					<Input
 						id="txb_Quantity"
@@ -321,11 +278,7 @@
 							}"
 							numberUnit="{viewListaMaterial>UnitCount}" >
 							<attributes>
-								<ObjectAttribute text="{
-								parts:[{ path: 'viewListaMaterial>QuantityCount' }, { path: 'viewListaMaterial>UnitCount' }],
-								type: 'sap.ui.model.type.Currency',
-								formatOptions: {showMeasure: false}
-							}" />
+								<ObjectAttribute text="{viewListaMaterial>Material}" />
 							</attributes>
 						</ObjectListItem>
 					</items>
@@ -337,11 +290,52 @@
 				<ToolbarSpacer/>
 			</OverflowToolbar>
 		</footer>
-	</Page>		
+	</Page>	
+<!--
+	<Page id="S1_MainScreen_Old" 
+		busy="{viewMain>/busy}"
+		busyIndicatorDelay="{viewMain>/busyDelay}"
+		title="{i18n>s1Title}"
+		visible="{viewMain>/visible}">
+		<headerContent>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button 
+					type="Transparent"	
+					tooltip="{i18n>s1Configure}" 
+					icon="sap-icon://action-settings"
+					press="._onConfigPress" />
+			</OverflowToolbar>
+		</headerContent>
+		<content>
+				<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileSinc}">
+				
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileCont}" 
+								 press="actionS1_tileContagem">
+						
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileRecont}" 
+								 press="actionS1_tileContagem">
+						
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileRecup}" 
+								 press="actionS1_tileContagem">
+						
+					</GenericTile>
+				</FlexBox>
+		</content>
+	</Page>
+	-->
 				</pages>
 			</NavContainer>
 		</tnt:mainContents>
 		
-	</tnt:ToolPage>
+	</tnt:ToolPage>			
 	
 </mvc:View>
