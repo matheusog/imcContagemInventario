@@ -4,13 +4,16 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
 	"imc/sap/mm/contageminventario/model/models", 
-	"imc/sap/mm/contageminventario/model/formatter"
-], function(BaseController, UIcomponent, MessageBox, Filter, Models, Formatter) {
+	"imc/sap/mm/contageminventario/model/formatter",
+	"sap/ui/util/Storage"
+], function(BaseController, UIcomponent, MessageBox, Filter, Models, Formatter,Storage) {
 	"use strict";
 
 	return BaseController.extend("imc.sap.mm.contageminventario.controller.S1_MainScreen", {
 		
 		oFormatter: Formatter,
+		
+		oStorage: Storage,
 		
 		onInit: function(){
 			this.getRouter().getRoute("S1_MainScreen").attachMatched(this._routeMatched, this);
@@ -20,8 +23,20 @@ sap.ui.define([
 			this._oNavContainer 	= this.byId("idAppControl");
 			this._oToolPage			= this.byId("pageS1MainScreen");
 			this._oResourceBundle	= this.getOwnerComponent().getModel('i18n').getResourceBundle();
-			
+			this.oStorage = new Storage(Storage.Type.local, "imcLocalDB");
+			this.byId("listMaterial").getBinding("items").attachChange(e => this._bindingUpdated(e));
 			//this._oViewMain.setProperty("/visible", true);
+		},
+		
+		onDataChangeModel: function(oEvent){
+			var o2= oEvent.getParameters();
+			var stData = this._oViewListaMaterial.getProperty("/materiais");
+			this.oStorage.put("materiais",stData);
+		},
+		
+		_bindingUpdated: function(oEvent){
+			var o1 = oEvent.getParameters();
+			this.oStorage.put("materiais",oEvent.getSource().getModel().getProperty("/materiais"));
 		},
 		
 		_back : function(oEvent) {
@@ -74,7 +89,7 @@ sap.ui.define([
 		}, 
 		
 		_handleSearchMaterial : function(oEvent) {
-			var sQuery = oEvent.getParameter("query"); 
+			var sQuery = oEvent.getParameter("query");	
 			//var sQuery = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oList = this.byId("listMaterial"); 
@@ -240,13 +255,15 @@ sap.ui.define([
 		_onSubmitQuantity : function(oEvent) {
 			this._back();
 			this._oViewContagem.setProperty("/inMaterial", '');
+			this.onDataChangeModel(oEvent);
 		}, 
 		
 		_readDataPlant : function(sCentro) {
 			
 			function onSuccess(oResponse) {
 				var oData = JSON.parse(oResponse.response);
-				
+				this.oStorage.removeAll();
+				this.oStorage.put("centro", oData);
 				this._oViewMain.setProperty("/busy", false);
 				
 				this._oViewMain.setProperty("/centroState", undefined);
@@ -294,6 +311,7 @@ sap.ui.define([
 					if(oData && oData.d && oData.d.results) {
 						if(resolve){
 							this._oViewListaMaterial.setProperty("/materiais", oData.d.results);
+							//this.oStorage.put("materiais",oData.d.results);
 							resolve(oResponse);
 						}
 					}

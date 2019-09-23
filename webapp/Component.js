@@ -23,9 +23,6 @@ sap.ui.define([
 			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
 			
-			//initiate indexedDB
-			models.createDatabase();                         
-			
 			this.getRouter().initialize();
 		}
 	});

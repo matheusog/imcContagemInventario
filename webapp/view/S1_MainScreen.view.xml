@@ -274,7 +274,8 @@
 								parts:[{ path: 'viewListaMaterial>QuantityCount' }, { path: 'viewListaMaterial>UnitCount' }],
 								type: 'sap.ui.model.type.Currency',
 								formatter: '.oFormatter.formatQuantity',
-								formatOptions: {showMeasure: false}
+								formatOptions: {showMeasure: false},
+								events:{ change: '.onDataChangeModel'}
 							}"
 							numberUnit="{viewListaMaterial>UnitCount}" >
 							<attributes>
