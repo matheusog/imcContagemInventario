@@ -3,6 +3,8 @@
 	xmlns:core="sap.ui.core"
 	xmlns:form="sap.ui.layout.form">
 	<Dialog
+		busy="{viewMain>/busy}"
+		busyIndicatorDelay="{viewMain>/busyDelay}"
 		title="{i18n>f1Title}"
 		type="Standard"
 		>
@@ -11,7 +13,18 @@
 				<!--labelSpanM="12" labelSpanL="12" labelSpanXL="12" emptySpanL="6" emptySpanM="6">-->
 				<form:content>
 					<Label text="{i18n>f1InputLabel}" labelFor="inCentro"/>
-					<Input id="inCentro" value="{viewMain>/centro}" />
+					<Input id="inCentro" 
+						submit="._onSubmitCentro" 
+						value="{
+							model: 'viewMain',
+							path: '/centro/Plant',
+							type: 'sap.ui.model.type.String',
+							constraints: {
+								maxLength: 4
+							}
+						}" 
+						valueState="{viewMain>/centroState}" 
+						valueStateText="{viewMain>/centroStateMsg}" />
 				</form:content>
 			</form:SimpleForm>
 		</content><!-- sap.ui.core.Control -->
@@ -19,7 +32,7 @@
 			<Button 
 				text="{i18n>f1BeginButton}"
 				press="._onConfirmCentro" 
-				enabled="{= !(${viewMain>/centro} === undefined) &amp;&amp; ${viewMain>/centro}.trim() !== '' }"
+				enabled="{= !(${viewMain>/centro/Plant} === undefined) &amp;&amp; ${viewMain>/centro/Plant}.trim() !== '' }"
 				/>	
 		</beginButton><!-- sap.m.Button -->
 		<endButton>
