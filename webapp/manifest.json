@@ -10,12 +10,23 @@
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
 		"sourceTemplate": {
-			"id": "ui5template.basicSAPUI5ApplicationProject",
-			"version": "1.40.12"
+			"id": "servicecatalog.connectivityComponent",
+			"version": "0.0.0"
 		},
-		"ach": "MM"
+		"ach": "MM",
+		"dataSources": {
+			"ZGW_MM_INVENTARIO_SRV": {
+				"uri": "/sap/opu/odata/sap/ZGW_MM_INVENTARIO_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/metadata.xml"
+				}
+			}
+		}
 	},
 	"sap.ui": {
+		"fullWidth": true,
 		"technology": "UI5",
 		"icons": {
 			"icon": "",
@@ -30,18 +41,27 @@
 			"tablet": true,
 			"phone": true
 		},
-		"supportedThemes": ["sap_hcb", "sap_belize"]
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_belize"
+		]
 	},
 	"sap.ui5": {
+		"rootView": {
+			"viewName": "imc.sap.mm.contageminventario.view.S0_App",
+			"type": "XML",
+			"async": true,
+			"id": "appStart"
+		},
 		"dependencies": {
 			"minUI5Version": "1.30.0",
 			"libs": {
-				"sap.ui.core": {},
+				"sap.collaboration": {},
 				"sap.m": {},
+				"sap.ui.comp": {},
+				"sap.ui.core": {},
 				"sap.ui.layout": {},
 				"sap.ushell": {},
-				"sap.collaboration": {},
-				"sap.ui.comp": {},
 				"sap.uxap": {}
 			}
 		},
@@ -58,9 +78,43 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewPath": "imc.sap.mm.contageminventario.view",
+				"viewType": "XML",
+				"controlId": "appStart",
+				"controlAggregation": "pages",
+				"clearAggregation": false,
+				"transition": "slide",
+				"async": true,
+				"bypassed": {
+					"target": "S1_MainScreen"
+				}
+			},
+			"routes": [
+				{
+					"name": "S1_MainScreen",
+					"pattern": "",
+					"target": [
+						"S1_MainScreen"
+					]
+				}
+			],
+			"targets": {
+				"S1_MainScreen": {
+					"viewId": "S1_MainScreen",
+					"viewType": "XML",
+					"viewName": "S1_MainScreen",
+					"viewLevel": 1
+				}
+			}
 		}
 	}
 }

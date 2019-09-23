@@ -1,0 +1,145 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:Reference
+        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='FIORI')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference
+        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='FIORI')/$value">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
+    </edmx:Reference>
+    <edmx:Reference
+        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='FIORI')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="Z_MM_TEST_CDS" xml:lang="pt" sap:schema-version="1">
+            <EntityType Name="I_MaterialPlantType" sap:label="Centro do material" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Material"/>
+                    <PropertyRef Name="Plant"/>
+                </Key>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:display-format="UpperCase" sap:text="Material_Text" sap:label="Material" sap:quickinfo="Nº do material" sap:value-list="standard"/>
+                <Property Name="Material_Text" Type="Edm.String" MaxLength="40" sap:label="Texto breve material" sap:quickinfo="Texto breve de material" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Centro"/>
+                <Property Name="MRPController" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Planejador MRP"/>
+                <Property Name="MaterialSafetyStockQty" Type="Edm.Decimal" Precision="13" Scale="3" sap:label="Estoque de segurança"/>
+                <Property Name="DfltStorLocForExtProcmt" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Depós.suprimto.ext." sap:quickinfo="Depósito proposto para suprimento externo"/>
+                <Property Name="MaterialABCClassification" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:text="to_MaterialABCClassification/MaterialABCClassification_Text" sap:label="Código ABC" sap:value-list="standard"/>
+                <NavigationProperty Name="to_MaterialABCClassification" Relationship="Z_MM_TEST_CDS.assoc_4A207587B1B646E50CBA7A721A959D02" FromRole="FromRole_assoc_4A207587B1B646E50CBA7A721A959D02" ToRole="ToRole_assoc_4A207587B1B646E50CBA7A721A959D02"/>
+            </EntityType>
+            <EntityType Name="I_MaterialStdVHType" sap:label="Material" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Material"/>
+                </Key>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:display-format="UpperCase" sap:text="Material_Text" sap:label="Material" sap:quickinfo="Nº do material"/>
+                <Property Name="Material_Text" Type="Edm.String" MaxLength="40" sap:label="Texto breve material" sap:quickinfo="Texto breve de material" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="I_MatlabcclassificationType" sap:label="entradas possíveis para código ABC para material" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="MaterialABCClassification"/>
+                </Key>
+                <Property Name="MaterialABCClassification" Type="Edm.String" Nullable="false" MaxLength="1" sap:display-format="UpperCase" sap:text="MaterialABCClassification_Text" sap:label="Código ABC"/>
+                <Property Name="MaterialABCClassification_Text" Type="Edm.String" MaxLength="30" sap:label="Texto de categoria de valor de consumo" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="Z_MM_TESTType" sap:label="Teste view MM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PhysicalInventoryDocument"/>
+                    <PropertyRef Name="FiscalYear"/>
+                    <PropertyRef Name="PhysicalInventoryDocumentItem"/>
+                </Key>
+                <Property Name="PhysicalInventoryDocument" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Documento do inventário físico"/>
+                <Property Name="FiscalYear" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="NonNegative" sap:label="Exercício"/>
+                <Property Name="PhysicalInventoryDocumentItem" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="NonNegative" sap:label="Item do documento de inventário físico" sap:quickinfo="Número do item do inventário físico"/>
+                <Property Name="Material" Type="Edm.String" MaxLength="40" sap:display-format="UpperCase" sap:label="Material" sap:quickinfo="Nº do material"/>
+                <Property Name="MaterialBaseUnit" Type="Edm.String" MaxLength="3" sap:label="Unid.medida básica" sap:quickinfo="Unidade de medida básica" sap:semantics="unit-of-measure"/>
+                <Property Name="MaterialName" Type="Edm.String" MaxLength="40" sap:label="Texto breve material" sap:quickinfo="Texto breve de material"/>
+                <Property Name="PhysInventoryPlannedCountDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Data prev.contagem" sap:quickinfo="Data prevista para a contagem do inventário"/>
+                <Property Name="Plant" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Centro"/>
+                <Property Name="PlantName" Type="Edm.String" MaxLength="30" sap:label="Nome do centro"/>
+                <Property Name="PhysicalInventoryLastCountDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Data contagem" sap:quickinfo="Data de realização da última contagem"/>
+                <Property Name="PostingDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Data de lançamento" sap:quickinfo="Data de lançamento no documento"/>
+                <NavigationProperty Name="to_MaterialPlant" Relationship="Z_MM_TEST_CDS.assoc_3C1016717B44AEA65CCC48B461EACE10" FromRole="FromRole_assoc_3C1016717B44AEA65CCC48B461EACE10" ToRole="ToRole_assoc_3C1016717B44AEA65CCC48B461EACE10"/>
+            </EntityType>
+            <Association Name="assoc_3C1016717B44AEA65CCC48B461EACE10" sap:content-version="1">
+                <End Type="Z_MM_TEST_CDS.Z_MM_TESTType" Multiplicity="1" Role="FromRole_assoc_3C1016717B44AEA65CCC48B461EACE10"/>
+                <End Type="Z_MM_TEST_CDS.I_MaterialPlantType" Multiplicity="0..1" Role="ToRole_assoc_3C1016717B44AEA65CCC48B461EACE10"/>
+            </Association>
+            <Association Name="assoc_4A207587B1B646E50CBA7A721A959D02" sap:content-version="1">
+                <End Type="Z_MM_TEST_CDS.I_MaterialPlantType" Multiplicity="1" Role="FromRole_assoc_4A207587B1B646E50CBA7A721A959D02"/>
+                <End Type="Z_MM_TEST_CDS.I_MatlabcclassificationType" Multiplicity="0..1" Role="ToRole_assoc_4A207587B1B646E50CBA7A721A959D02"/>
+                <ReferentialConstraint>
+                    <Principal Role="ToRole_assoc_4A207587B1B646E50CBA7A721A959D02">
+                        <PropertyRef Name="MaterialABCClassification"/>
+                    </Principal>
+                    <Dependent Role="FromRole_assoc_4A207587B1B646E50CBA7A721A959D02">
+                        <PropertyRef Name="MaterialABCClassification"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="Z_MM_TEST_CDS_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="I_MaterialPlant" EntityType="Z_MM_TEST_CDS.I_MaterialPlantType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_MaterialStdVH" EntityType="Z_MM_TEST_CDS.I_MaterialStdVHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_Matlabcclassification" EntityType="Z_MM_TEST_CDS.I_MatlabcclassificationType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="Z_MM_TEST" EntityType="Z_MM_TEST_CDS.Z_MM_TESTType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <AssociationSet Name="assoc_3C1016717B44AEA65CCC48B461EACE10" Association="Z_MM_TEST_CDS.assoc_3C1016717B44AEA65CCC48B461EACE10" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Z_MM_TEST" Role="FromRole_assoc_3C1016717B44AEA65CCC48B461EACE10"/>
+                    <End EntitySet="I_MaterialPlant" Role="ToRole_assoc_3C1016717B44AEA65CCC48B461EACE10"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_4A207587B1B646E50CBA7A721A959D02" Association="Z_MM_TEST_CDS.assoc_4A207587B1B646E50CBA7A721A959D02" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="I_MaterialPlant" Role="FromRole_assoc_4A207587B1B646E50CBA7A721A959D02"/>
+                    <End EntitySet="I_Matlabcclassification" Role="ToRole_assoc_4A207587B1B646E50CBA7A721A959D02"/>
+                </AssociationSet>
+            </EntityContainer>
+            <Annotations
+                xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="Z_MM_TEST_CDS.I_MaterialPlantType/Material">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Material"/>
+                        <PropertyValue Property="CollectionPath" String="I_MaterialStdVH"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Material"/>
+                                    <PropertyValue Property="ValueListProperty" String="Material"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Material_Text"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations
+                xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="Z_MM_TEST_CDS.I_MaterialPlantType/MaterialABCClassification">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="value help for ABC indicator for material"/>
+                        <PropertyValue Property="CollectionPath" String="I_Matlabcclassification"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="MaterialABCClassification"/>
+                                    <PropertyValue Property="ValueListProperty" String="MaterialABCClassification"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="MaterialABCClassification_Text"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <atom:link
+                xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/Z_MM_TEST_CDS/$metadata"/>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/Z_MM_TEST_CDS/$metadata"/>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>

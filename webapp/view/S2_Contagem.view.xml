@@ -1,0 +1,46 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="imc.sap.mm.contageminventario.controller.S2_Contagem" xmlns:html="http://www.w3.org/1999/xhtml">
+	
+		<Panel headerText="" class="sapUiResponsiveMargin" width="100%">
+			<content>
+				<Flexbox alignItems="Center" justifyContent="Center" wrap="Wrap" direction="Column">
+					<Label text="Centro:" design="Bold"></Label>
+					<Label text="numero do Centro" design="Standard"></Label>
+					<Label text="Data: " labelFor="DP3" design="Bold"/>
+					<DatePicker
+						id="DP3"
+						displayFormat="short"
+						change="handleChange"
+						class="sapUiSmallMarginBottom"
+						editable="false"/>
+					<Label text="Material: " labelFor="txb_Codigo" design="Bold"/>
+					<Input
+						id="txb_Codigo"
+						type="Text"
+						placeholder="Código do material">
+					</Input>
+					<Button
+						id="btn_PesquisaMaterial"
+						text="Buscar Material"
+						type="Default"
+						width=""
+						press="onPress">
+					</Button>
+					<Button
+						id="btn_ListarMateriais"
+						text="Listar Materiais"
+						type="Default"
+						width=""
+						press="onPress">
+					</Button>
+				</Flexbox>
+			</content> 
+		</Panel>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button text="Accept" type="Accept" />
+				<Button text="Reject" type="Reject" />
+				<Button text="Edit" />
+				<Button text="Delete" />
+			</OverflowToolbar>
+</mvc:View>

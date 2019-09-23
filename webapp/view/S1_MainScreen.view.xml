@@ -1,0 +1,346 @@
+<mvc:View 
+	xmlns:core="sap.ui.core" 
+	xmlns:f="sap.ui.layout.form"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m"
+	xmlns:tnt="sap.tnt"
+	controllerName="imc.sap.mm.contageminventario.controller.S1_MainScreen" 
+	displayBlock="true"
+	busy="{viewMain>busy}"
+	busyIndicatorDelay="{viewMain>busyDelay}"
+	visible="{viewMain>visible}">
+	<!--
+	<Page id="S1_Old" visible="false">
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S1_SelectionScreen" visible="true" />
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S2_Contagem" visible="false"/>
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S3_ContarMaterial" visible="false"/>
+				<mvc:XMLView viewName="imc.sap.mm.contageminventario.view.S3_ListarMateriais" visible="false"/>
+	</Page>
+	-->
+	<tnt:ToolPage id="pageS1MainScreen"
+		busy="{viewMain>/busy}"
+		busyIndicatorDelay="{viewMain>/busyDelay}">
+		<tnt:header>
+			<tnt:ToolHeader>
+				<Button id="sideNavigationToggleButton"
+						icon="sap-icon://menu2"
+						type="Transparent"
+						press=".onSideNavButtonPress">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow" />
+					</layoutData>
+				</Button>
+				<ToolbarSpacer/>
+				<Title text="{i18n>appTitle}" titleStyle="{= ${device>/system/phone} ? 'H4' : 'H2' }">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="Low"/>
+					</layoutData>
+				</Title>
+				<ToolbarSpacer/>
+				<Button 
+					type="Transparent"	
+					tooltip="{i18n>s1Configure}" 
+					icon="sap-icon://action-settings"
+					press="._onConfigPress">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow" />
+					</layoutData>
+				</Button>
+			</tnt:ToolHeader>	
+		</tnt:header>
+		<tnt:sideContent>
+			<tnt:SideNavigation>
+				<tnt:NavigationList>
+					<tnt:NavigationListItem text="{i18n>s1TileCont}" key="S2_Contagem" icon="sap-icon://home" select="._onNavItem"/>
+					<tnt:NavigationListItem text="{i18n>s1TileRecont}" key="S2_Contagem" icon="sap-icon://grid" select="._onNavItem"/>
+					<tnt:NavigationListItem text="{i18n>s1TileRecup}" key="S2_Contagem" icon="sap-icon://grid" select="._onNavItem"/>
+				</tnt:NavigationList>
+			</tnt:SideNavigation>
+		</tnt:sideContent>
+		<tnt:mainContents>
+			<NavContainer 
+				id="idAppControl"
+				initialPage="S1_empty" >
+				<pages>
+				<Page id="S1_empty" 
+					showHeader="false" 
+					showFooter="false"
+					busyIndicatorDelay="{viewMain>/busyDelay}"
+					busy="{viewMain>/busy}"></Page>	
+
+	<Page id="S2_Contagem" 
+		busy="{viewContagem>/busy}"
+		busyIndicatorDelay="{viewContagem>/busyDelay}"
+		navButtonPress="._back"
+		navButtonTooltip="{i18n>s2BtnVoltar}"
+		showHeader="false"
+		showNavButton="false"
+		title="{i18n>s2Title}"
+		visible="{viewContagem>/visible}">
+		<headerContent>
+			<!--
+			<OverflowToolbar>
+				<Button text="{i18n>s2BtnVoltar}" type="Back" press="onPressS2_Back"/>
+			</OverflowToolbar>
+			-->
+		</headerContent>
+		<content>
+			<Flexbox alignItems="Center" justifyContent="Center" wrap="Wrap" direction="Column">
+				<Label text="{i18n>s2FieldCentro}" design="Bold" labelFor="txb_Centro" />
+				<Label text="{ 
+					parts: [{ path: 'viewContagem>/contagem/Plant' }, { path: 'viewContagem>/contagem/PlantName' }], 
+					formatter: '.oFormatter.formatCentro'
+				}" 
+					design="Standard"></Label>
+				<!--<Input
+					id="txb_Centro"
+					type="Text"
+					placeholder="Código do Centro" />-->
+				<Label text="{i18n>s2FieldData}" labelFor="DP3" design="Bold"/>
+				<DatePicker
+					id="DP3"
+					displayFormat="short"
+					change="handleChange"
+					class="sapUiSmallMarginBottom"
+					value="{
+						model: 'viewContagem',
+						path: '/contagem/PhysInventoryPlannedCountDate', 
+						type: 'sap.ui.model.type.Date',
+                        formatOptions: { 
+                            style: 'medium', 
+                            strictParsing: true
+                        }
+                    }"
+					editable="false"/>
+				<Label text="{i18n>s2FieldMaterial}" labelFor="txb_Codigo" design="Bold"/>
+				<Input
+					id="txb_Codigo"
+					value="{viewContagem>/inMaterial}"
+					type="Text"
+					submit="._onSubmitMaterial"
+					placeholder="{i18n>s2FldPhMaterial}">
+				</Input>
+			</Flexbox>
+		</content> 
+		<footer>
+			<OverflowToolbar>
+				<Button class="sapUiSmallMarginBegin" press="_back" text="{i18n>s2BtnVoltar}" type="Back">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow" />
+					</layoutData>
+				</Button>
+				<ToolbarSpacer/>
+				<Button
+					id="btn_PesquisaMaterial"
+					text="{i18n>s2BtnSearch}"
+					type="Transparent"
+					press="onPressS2_PesquisaMaterial" 
+					icon="sap-icon://inspection" />
+				<!--{= ${device>phone} ? 'Default' : 'Default' }-->
+				<Button
+					id="btn_ListarMateriais"
+					text="{i18n>s2BtnList}"
+					type="Default"
+					press="onPressS2_ListaMateriais" 
+					icon="sap-icon://activities" />
+				<ToolbarSpacer visible="{= !${device>phone}}" />
+				<Button 
+					icon="sap-icon://save"
+					press=".onSaveContagem"
+					text="{i18n>s2BtnSalvar}"
+					tooltip="{i18n>s2BtnSalvar}"
+					type="Accept" />
+				<Button 
+					icon="sap-icon://synchronize" 
+					text="{i18n>s2BtnSync}" 
+					tooltip="{i18n>s2BtnSync}"
+					type="Accept" />
+			</OverflowToolbar>
+		</footer>
+	</Page>
+	
+	<Page id="S3_ContarMaterial" 
+		busy="{viewContMaterial>/busy}"
+		busyIndicatorDelay="{viewContMaterial>/busyDelay}"
+		class="sapUiResponsiveContentPadding"
+		navButtonTooltip="{i18n>s2BtnVoltar}"
+		showHeader="false"
+		showNavButton="false"
+		visible="{viewContMaterial>/visible}">
+		<content>
+			<f:SimpleForm id="formContagem"
+				editable="true"
+				layout="ResponsiveGridLayout"
+				title="{i18n>s3TitleFormContarMat}"
+				labelSpanXL="6"
+				labelSpanL="6"
+				labelSpanM="6"
+				labelSpanS="6"
+				adjustLabelSpan="false"
+				emptySpanXL="4"
+				emptySpanL="4"
+				emptySpanM="4"
+				emptySpanS="0"
+				columnsXL="1"
+				columnsL="1"
+				columnsM="1"
+				singleContainerFullSize="false">
+				<f:content>
+					<Label text="{i18n>s3ContColCentro}" design="Bold" />
+					<Text
+						id="txb_Centro"
+						text="{ 
+							parts: [{ path: 'viewContMaterial>/material/Plant' }, { path: 'viewContMaterial>/material/PlantName' }], 
+							formatter: '.oFormatter.formatCentro'
+						}" />
+					<Label text="{i18n>s3ContColCodMat}" design="Bold" />
+					<Text
+						id="txb_Material"
+						text="{
+							parts: [{ path: 'viewContMaterial>/material/Material' }, { path: 'viewContMaterial>/material/MaterialName' }],
+							formatter: '.oFormatter.formatCentro'
+						}" />
+					<Label text="{i18n>s3ContColPrice}" design="Bold" />
+					<Text
+						id="txb_Price"
+						text="{viewContMaterial>/material/AveragePrice}" />
+					<Label text="{i18n>s3ContColUnidade}" design="Bold" />
+					<Text
+						id="txb_Unidade"
+						visible="{= ${viewContMaterial>/unidades} &amp;&amp; ${viewContMaterial>/unidades}.length &lt;= 1 }"
+						text="{viewContMaterial>/material/UnitCount}" />					
+					<ComboBox
+						visible="{= ${viewContMaterial>/unidades} &amp;&amp; ${viewContMaterial>/unidades}.length &gt; 1 }"
+						value="{viewContMaterial>/material/UnitCount}"
+						items="{
+							path: 'viewContMaterial>/unidades'
+						}">
+						<core:Item key="{viewContMaterial>Unit}" text="{viewContMaterial>Unit}" />
+					</ComboBox>
+					<Label text="{i18n>s3ContColQuantity}" design="Bold" />
+					<Input
+						id="txb_Quantity"
+						value="{
+							parts: [ { path: 'viewContMaterial>/material/QuantityCount' }, {path: 'viewContMaterial>/material/UnitCount' } ], 
+							type: 'sap.ui.model.type.Currency',
+							formatOptions: {showMeasure: false}
+						}"
+						submit="._onSubmitQuantity"
+						/>
+				</f:content>
+			</f:SimpleForm>
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<Button class="sapUiSmallMarginBegin" press="_back" text="{i18n>s2BtnVoltar}" type="Back"/>
+				<ToolbarSpacer/>
+			</OverflowToolbar>
+		</footer>
+	</Page>
+	
+	<Page id="S3_ListarMateriais" 
+		busy="{viewListaMaterial>/busy}"
+		busyIndicatorDelay="{viewListaMaterial>/busyDelay}"
+		class="sapUiResponsiveContentPadding"
+		navButtonTooltip="{i18n>s2BtnVoltar}"
+		showHeader="false"
+		showNavButton="false"
+		visible="{viewListaMaterial>/visible}">
+		<content>
+				<SearchField 
+					width="100%"
+					search="_handleSearchMaterial" />
+
+				<List
+					id="listMaterial"
+					items="{viewListaMaterial>/materiais}">
+					<headerToolbar>
+						<OverflowToolbar>
+							<Title text="{i18n>s3ListTitle}" level="H2"/>
+							<ToolbarSpacer/>
+							<Button 
+								type="Transparent" 
+								tooltip="{i18n>s3Filters}"
+								press="._onFilterListPress"
+								icon="sap-icon://filter">
+								<layoutData>
+									<OverflowToolbarLayoutData priority="NeverOverflow" />
+								</layoutData>
+							</Button>
+						</OverflowToolbar>
+					</headerToolbar>
+					<items>
+						<ObjectListItem
+							title="{viewListaMaterial>MaterialName}"
+							type="Inactive"
+							number="{
+								parts:[{ path: 'viewListaMaterial>QuantityCount' }, { path: 'viewListaMaterial>UnitCount' }],
+								type: 'sap.ui.model.type.Currency',
+								formatter: '.oFormatter.formatQuantity',
+								formatOptions: {showMeasure: false},
+								events:{ change: '.onDataChangeModel'}
+							}"
+							numberUnit="{viewListaMaterial>UnitCount}" >
+							<attributes>
+								<ObjectAttribute text="{viewListaMaterial>Material}" />
+							</attributes>
+						</ObjectListItem>
+					</items>
+				</List>
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<Button class="sapUiSmallMarginBegin" press="_back" text="{i18n>s2BtnVoltar}" type="Back"/>
+				<ToolbarSpacer/>
+			</OverflowToolbar>
+		</footer>
+	</Page>	
+<!--
+	<Page id="S1_MainScreen_Old" 
+		busy="{viewMain>/busy}"
+		busyIndicatorDelay="{viewMain>/busyDelay}"
+		title="{i18n>s1Title}"
+		visible="{viewMain>/visible}">
+		<headerContent>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button 
+					type="Transparent"	
+					tooltip="{i18n>s1Configure}" 
+					icon="sap-icon://action-settings"
+					press="._onConfigPress" />
+			</OverflowToolbar>
+		</headerContent>
+		<content>
+				<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileSinc}">
+				
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileCont}" 
+								 press="actionS1_tileContagem">
+						
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileRecont}" 
+								 press="actionS1_tileContagem">
+						
+					</GenericTile>
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" 
+								 header="{i18n>s1TileRecup}" 
+								 press="actionS1_tileContagem">
+						
+					</GenericTile>
+				</FlexBox>
+		</content>
+	</Page>
+	-->
+				</pages>
+			</NavContainer>
+		</tnt:mainContents>
+		
+	</tnt:ToolPage>			
+	
+</mvc:View>

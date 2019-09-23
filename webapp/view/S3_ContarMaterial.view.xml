@@ -1,0 +1,51 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="imc.sap.mm.contageminventario.controller.S3_ContarMaterial" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Panel headerText="" class="sapUiResponsiveMargin" width="100%">
+		<content>
+				<FlexBox alignItems="Center" justifyContent="Center" wrap="Wrap"  direction="Column">
+					<Label text="Centro:" design="Bold"></Label>
+						<Input
+						id="txb_Codigo8"
+						type="Text"
+						placeholder="Código do material"
+						enabled="false">
+						</Input>
+					<Label text="Material:" design="Bold"></Label>
+					<Input
+						id="txb_Codigo2"
+						type="Text"
+						placeholder="Código do material"
+						enabled="false">
+					</Input>
+					<Label text="Descrição:" design="Bold"></Label>
+					<Input
+						id="txb_Codigo3"
+						type="Text"
+						placeholder="Código do material"
+						enabled="false">
+					</Input>
+					<Label text="UMB/UMR:" design="Bold"></Label>
+					<Input
+						id="txb_Codigo4"
+						type="Text"
+						placeholder="Código do material"
+						enabled="false">
+					</Input>
+					<Label text="Quantidade:" design="Bold"></Label>
+					<Input
+						id="txb_Codigo5"
+						type="Text"
+						placeholder="Código do material"
+						enabled="false">
+					</Input>
+					<Label text="Valor:" design="Bold"></Label>
+					<Input
+						id="txb_Codigo6"
+						type="Text"
+						placeholder="Código do material"
+						enabled="false">
+					</Input>
+				</FlexBox>
+		</content>
+	</Panel>
+</mvc:View>
