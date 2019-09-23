@@ -259,7 +259,11 @@
 						<OverflowToolbar>
 							<Title text="{i18n>s3ListTitle}" level="H2"/>
 							<ToolbarSpacer/>
-							<Button type="Transparent" icon="sap-icon://filter">
+							<Button 
+								type="Transparent" 
+								tooltip="{i18n>s3Filters}"
+								press="._onFilterListPress"
+								icon="sap-icon://filter">
 								<layoutData>
 									<OverflowToolbarLayoutData priority="NeverOverflow" />
 								</layoutData>

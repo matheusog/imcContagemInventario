@@ -1,13 +1,11 @@
 sap.ui.define([ 
 	"sap/ui/core/mvc/Controller", 
 	"sap/ui/core/routing/History",
-	"imc/sap/mm/contageminventario/util/Formatter",
 	"sap/ui/model/json/JSONModel"
-], function(Controller,History, Formatter, JSONModel) {
+], function(Controller,History, JSONModel) {
 	"use strict";
 	
 	return Controller.extend("imc.sap.mm.contageminventario.controller.BaseController", {
-		oFormatter: Formatter, 
 		
 		_sServiceURL: "/sap/opu/odata/sap/ZGW_MM_INVENTARIO_SRV",
 		_sEntityInvent: "/ZC_MM_INVENTARIO", 
