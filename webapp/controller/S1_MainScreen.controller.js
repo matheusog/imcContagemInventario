@@ -122,9 +122,9 @@ sap.ui.define([
 		_handleSearchMaterial : function(oEvent) {
 			var sQuery = oEvent.getParameter("query");	
 			//var sQuery = oEvent.getSource().getValue();
+			var oList = this.byId("listMaterial"); 
 			var oBinding = oList.getBinding("items");
 			var aFilters = [];
-			var oList = this.byId("listMaterial"); 
 			
 			if(oBinding.aFilters) {
 				aFilters = oBinding.aFilters;
