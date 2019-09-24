@@ -49,7 +49,8 @@
     "sourceFolder": "webapp",
     "targetFolder": "dist",
     "excludedFolders": [],
-    "excludedFiles": []
+    "excludedFiles": [],
+    "lastBuildDateTime": "Tue, 24 Sep 2019 16:50:53 GMT"
   },
   "mockpreview": {
     "mockUri": "/sap/opu/odata/sap/Z_MM_TEST_CDS",
@@ -57,5 +58,9 @@
     "loadJSONFiles": false,
     "loadCustomRequests": false,
     "mockRequestsFilePath": ""
+  },
+  "deploy": {
+    "destination": "IMC_SFD_100",
+    "name": "Z_IMC_Cont_Inv"
   }
 }
