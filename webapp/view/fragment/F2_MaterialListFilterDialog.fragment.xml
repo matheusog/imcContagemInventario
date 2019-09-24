@@ -1,0 +1,23 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:form="sap.ui.layout.form">
+	<ViewSettingsDialog
+		confirm="_handleFilterDialogConfirm"
+		busy="{viewListaMaterial>/busy}"
+		busyIndicatorDelay="{viewListaMaterial>/busyDelay}" >
+		<filterItems>
+			<ViewSettingsFilterItem
+				text="{i18n>f2FilterContados}"
+				key="contagem"
+				multiSelect="false">
+				<items>
+					<ViewSettingsItem text="{i18n>f2ValContAll}" key="contAll" />
+					<ViewSettingsItem text="{i18n>f2ValContOrig}" key="contOrig" />
+					<ViewSettingsItem text="{i18n>f2ValContAlter}" key="contAlter" />
+				</items>
+			</ViewSettingsFilterItem>
+		</filterItems>	
+	</ViewSettingsDialog>
+	
+</core:FragmentDefinition>
