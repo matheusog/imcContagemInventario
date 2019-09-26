@@ -553,45 +553,83 @@ sap.ui.define([
 			this._navPage("S3_ListarMateriais", true);
 		}, 
 		
-		onSaveContagem: function(oEvent) {
-			//_back();
-		}
+		fetchToken: function(){
+			var sURL = `${this._sServiceURL}/$metadata`
+			var oRequest = new XMLHttpRequest();
+			oRequest.open('GET',sURL,'async');
+			oRequest.setRequestHeader("x-csrf-token", "fetch");
+			
+			oRequest.onload = e => {
+				var token = oRequest.getResponseHeader("x-csrf-token");
+				this.sendPost(token);
+			};
+			
+			oRequest.onerror = e =>{
+				console.log(e.message);
+			};
+			
+			oRequest.send();
+		},
 		
-		/**
-		 * Called when a controller is instantiated and its View controls (if available) are already created.
-		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-		 * @memberOf imc.sap.mm.contageminventario.view.S1_MainScreen
-		 */
-		//	onInit: function() {
-		//
-		//	},
-
-		/**
-		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
-		 * (NOT before the first rendering! onInit() is used for that one!).
-		 * @memberOf imc.sap.mm.contageminventario.view.S1_MainScreen
-		 */
-		//	onBeforeRendering: function() {
-		//
-		//	},
-
-		/**
-		 * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
-		 * This hook is the same one that SAPUI5 controls get after being rendered.
-		 * @memberOf imc.sap.mm.contageminventario.view.S1_MainScreen
-		 */
-		//	onAfterRendering: function() {
-		//
-		//	},
-
-		/**
-		 * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-		 * @memberOf imc.sap.mm.contageminventario.view.S1_MainScreen
-		 */
-		//	onExit: function() {
-		//
-		//	}
-
+		sendPost: function(token){
+			var sURL = `${this._sServiceURL}${this._sEntityPlanDate}`
+			var oRequest = new XMLHttpRequest();
+			oRequest.open('POST',sURL,'async');
+			oRequest.setRequestHeader("x-csrf-token",token);
+			oRequest.setRequestHeader("Content-Type","application/json");
+			oRequest.setRequestHeader("Accept","application/json");
+			oRequest.onload = e => {
+				if(e.target.status == 201){
+					MessageBox.show( "Sent", 
+					{
+						icon: sap.m.MessageBox.Icon.SUCCESS,
+						title: "Sincronizado com sucesso",
+						actions: [sap.m.MessageBox.Action.CLOSE]
+					});
+				}else{
+						MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: this._oResourceBundle.getText("msgError"),
+						actions: [sap.m.MessageBox.Action.CLOSE],
+						id: "msgGenericError",
+						details: oData,
+						styleClass: bCompact ? "sapUiSizeCompact" : "",
+						contentWidth: "auto"
+				});
+				}		
+			};
+			
+			oRequest.onerror = e =>{
+				MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: this._oResourceBundle.getText("msgError"),
+						actions: [sap.m.MessageBox.Action.CLOSE],
+						id: "msgGenericError",
+						details: oData,
+						styleClass: bCompact ? "sapUiSizeCompact" : "",
+						contentWidth: "auto"
+	
+				});
+			};
+			var centroStorage = this.oStorage.get("centro");
+			var materiaisStorage = this.oStorage.get("materiais");
+			var jsonDataSend = JSON.stringify({
+				"Plant": centroStorage.d.Plant,
+				"PhysInventoryPlannedCountDate": "/Date(1562716800000)/",
+				"PlantName": centroStorage.d.PlantName,
+				"PostingDate": null,
+				"PhysicalInventoryLastCountDate": null,
+				"InventoryCount": materiaisStorage.length,
+				"to_InventoryCount": materiaisStorage,
+			});
+			oRequest.send(jsonDataSend);
+		},
+		
+		onPressS2_Sync: function(oEvent){
+			console.log("entrou");
+			this.fetchToken();
+		}
 	});
-
 });

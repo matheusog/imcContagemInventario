@@ -146,13 +146,8 @@
 					icon="sap-icon://activities" />
 				<ToolbarSpacer visible="{= !${device>phone}}" />
 				<Button 
-					icon="sap-icon://save"
-					press=".onSaveContagem"
-					text="{i18n>s2BtnSalvar}"
-					tooltip="{i18n>s2BtnSalvar}"
-					type="Accept" />
-				<Button 
-					icon="sap-icon://synchronize" 
+					icon="sap-icon://synchronize"
+					press="onPressS2_Sync"
 					text="{i18n>s2BtnSync}" 
 					tooltip="{i18n>s2BtnSync}"
 					type="Accept" />
@@ -235,6 +230,7 @@
 			<OverflowToolbar>
 				<Button class="sapUiSmallMarginBegin" press="_back" text="{i18n>s2BtnVoltar}" type="Back"/>
 				<ToolbarSpacer/>
+				<Button class="sapUiSmallMarginEnd" press="_onSubmitQuantity" text="{i18n>s2BtnSalvar}" type="Accept"/>
 			</OverflowToolbar>
 		</footer>
 	</Page>
