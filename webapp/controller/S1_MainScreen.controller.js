@@ -201,15 +201,16 @@ sap.ui.define([
 					this._onConfigPress(null, this._navPage.bind(this, sKey, sType, bOffline));
 				} else {
 					function navToOffline(sKey) {
-						if(sType === "Offline"){
-							this._oViewMain.setProperty("/centro/Plant", this.oStorage.get("centro").d.Plant);
-							this._oViewListaMaterial.setProperty("/materiais", this.oStorage.get("materiais").d);
-							this._oViewContagem.setProperty("/contagem", this.oStorage.get("contagem").d);
-						}
 						this._oNavContainer.to(this.getView().createId(sKey));
 						if(this._oToolPage.getSideExpanded()) {
 							this._oToolPage.setSideExpanded(!this._oToolPage.getSideExpanded());
 						} 
+						if(sType === "Offline"){
+							this._oViewMain.setProperty("/centro/Plant", this.oStorage.get("centro").Plant);
+							this._oViewListaMaterial.setProperty("/materiais", this.oStorage.get("materiais"));
+							this._oViewContagem.setProperty("/contagem", this.oStorage.get("contagem"));
+							this._oViewMain.setProperty("/busy",false);
+						}
 					}
 					function navToOnline(sKey) {
 						navToOffline.bind(this)(sKey);
