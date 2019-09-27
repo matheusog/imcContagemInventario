@@ -15,6 +15,10 @@ sap.ui.define([], function() {
 			}
 		},
 		
+		formatQuantity : function(nQuantity) {
+			return nQuantity.toString();
+		},
+		
 		formatStringOdataDateDisplay : function(sOdataDate) {
 			//var dDate		= eval('new ' + sOdataDate.replace(/\//g, ''));
 			var dDate = this.formatStringOdataDate(sOdataDate);

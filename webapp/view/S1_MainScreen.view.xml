@@ -52,9 +52,9 @@
 		<tnt:sideContent>
 			<tnt:SideNavigation>
 				<tnt:NavigationList>
-					<tnt:NavigationListItem text="{i18n>s1TileCont}" key="S2_Contagem" icon="sap-icon://home" select="._onNavItem"/>
-					<tnt:NavigationListItem text="{i18n>s1TileRecont}" key="S2_Contagem" icon="sap-icon://grid" select="._onNavItem"/>
-					<tnt:NavigationListItem text="{i18n>s1TileRecup}" key="S2_Contagem" icon="sap-icon://grid" select="._onNavItem"/>
+					<tnt:NavigationListItem text="{i18n>s1TileCont}" key="S2_Contagem#Cont" icon="sap-icon://home" select="._onNavItem"/>
+					<tnt:NavigationListItem text="{i18n>s1TileRecont}" key="S2_Contagem#ReCont" icon="sap-icon://grid" select="._onNavItem"/>
+					<tnt:NavigationListItem text="{i18n>s1TileRecup}" key="S2_Contagem#Offline" icon="sap-icon://grid" select="._onNavItem"/>
 				</tnt:NavigationList>
 			</tnt:SideNavigation>
 		</tnt:sideContent>
