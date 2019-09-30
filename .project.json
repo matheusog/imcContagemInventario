@@ -50,7 +50,7 @@
     "targetFolder": "dist",
     "excludedFolders": [],
     "excludedFiles": [],
-    "lastBuildDateTime": "Tue, 24 Sep 2019 16:50:53 GMT"
+    "lastBuildDateTime": "Tue, 24 Sep 2019 20:14:02 GMT"
   },
   "mockpreview": {
     "mockUri": "/sap/opu/odata/sap/Z_MM_TEST_CDS",
@@ -61,6 +61,6 @@
   },
   "deploy": {
     "destination": "IMC_SFD_100",
-    "name": "Z_IMC_Cont_Inv"
+    "name": "Z_IMC_CONT_INV"
   }
 }

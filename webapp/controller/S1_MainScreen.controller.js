@@ -93,10 +93,12 @@ sap.ui.define([
 			var oList = this.byId("listMaterial"),
 				oBinding = oList.getBinding("items"),
 				mParams = oEvent.getParameters(),
-				aFilters = [];
+				aFilters = [], 
+				aFiltersCurrent = [];
 			
-			if(oBinding.aFilters) {
-				aFilters = oBinding.aFilters;
+			//if(oBinding.aFilters) {
+			if(this._oViewListaMaterial.getProperty("/filterMaterial")) {
+				aFiltersCurrent = this._oViewListaMaterial.getProperty("/filterMaterial");
 			}
 			
 			mParams.filterItems.forEach(function(oItem) {
@@ -115,7 +117,13 @@ sap.ui.define([
 				}
 				
 			});
-
+			
+			this._oViewListaMaterial.setProperty("/filterUnit", aFilters);
+			aFilters = $.extend([], aFilters);
+			if(aFiltersCurrent){
+				aFiltersCurrent.forEach( oObj => aFilters.push(oObj) );
+			}
+			
 			oBinding.filter(aFilters);
 		}, 
 		
@@ -124,10 +132,12 @@ sap.ui.define([
 			//var sQuery = oEvent.getSource().getValue();
 			var oList = this.byId("listMaterial"); 
 			var oBinding = oList.getBinding("items");
-			var aFilters = [];
+			var aFilters = [], 
+				aFiltersCurrent = [];
 			
-			if(oBinding.aFilters) {
-				aFilters = oBinding.aFilters;
+			//if(oBinding.aFilters) {
+			if(this._oViewListaMaterial.getProperty("/filterUnit")) {
+				aFiltersCurrent = this._oViewListaMaterial.getProperty("/filterUnit");
 			}
 			if (sQuery && sQuery.length > 0) {
 				var oFilter = new Filter({
@@ -140,6 +150,11 @@ sap.ui.define([
 				aFilters.push(oFilter);
 			}
 			
+			this._oViewListaMaterial.setProperty("/filterMaterial", aFilters);
+			aFilters = $.extend([], aFilters);
+			if(aFiltersCurrent){
+				aFiltersCurrent.forEach( oObj => aFilters.push(oObj) );
+			}
 			oBinding.filter(aFilters);
 		}, 
 		
@@ -194,16 +209,25 @@ sap.ui.define([
 			this._oViewListaMaterial.setProperty("/materiais", []);
 		}, 
 		
-		_navPage : function(sKey, bOffline) {
+		_navPage : function(sKey, sType, bOffline) {
+				
 				var sCentro = this._oViewMain.getProperty("/centro/Plant");
-				if(!this._oViewMain.getProperty("/centro/Plant")) {
-					this._onConfigPress(null, this._navPage.bind(this, sKey));
+				if(!this._oViewMain.getProperty("/centro/Plant") && sType !== "Offline" ) {
+					this._onConfigPress(null, this._navPage.bind(this, sKey, sType, bOffline));
 				} else {
 					function navToOffline(sKey) {
 						this._oNavContainer.to(this.getView().createId(sKey));
 						if(this._oToolPage.getSideExpanded()) {
 							this._oToolPage.setSideExpanded(!this._oToolPage.getSideExpanded());
 						} 
+						if(sType === "Offline"){
+							this._oViewMain.setProperty("/centro", this.oStorage.get("centro"));
+							this._oViewListaMaterial.setProperty("/materiais", this.oStorage.get("materiais"));
+							var contagem = this.oStorage.get("contagem");
+							contagem.PhysInventoryPlannedCountDate = new Date(contagem.PhysInventoryPlannedCountDate);
+							this._oViewContagem.setProperty("/contagem", contagem);
+							this._oViewMain.setProperty("/busy",false);
+						}
 					}
 					function navToOnline(sKey) {
 						navToOffline.bind(this)(sKey);
@@ -211,7 +235,7 @@ sap.ui.define([
 						this._oViewMain.setProperty("/busy", false);
 					}
 					
-					if(bOffline) {
+					if(bOffline || sType === "Offline") {
 						navToOffline.bind(this)(sKey);
 					} else {
 						this._oViewMain.setProperty("/busy", true);
@@ -264,8 +288,11 @@ sap.ui.define([
 		
 		_onConfirmCentro : function(oEvent) {
 			this._oViewMain.setProperty("/busy", true);
+			this._initialize();
+			this.oStorage.clear();
 			var sCentro = this._oViewMain.getProperty("/centro/Plant");
 			this._readDataPlant(sCentro);
+			this._oNavContainer.to(this.getView().createId("S1_empty"));
 		},
 		
 		_onFilterListPress : function(oEvent) {
@@ -284,8 +311,10 @@ sap.ui.define([
 		_onNavItem : function(oEvent) {
 			var oItem = oEvent.getParameter('item');
 			if(oItem){ 
-				var sKey = oItem.getKey();
-				this._navPage(sKey);
+				var sType = oItem.getKey().split("#")[1];
+				var sKey =  oItem.getKey().split("#")[0];
+				this._oViewMain.setProperty("/viewType",sType);
+				this._navPage(sKey, sType, false);
 			}
 		}, 
 		
@@ -312,7 +341,7 @@ sap.ui.define([
 			function onSuccess(oResponse) {
 				var oData = JSON.parse(oResponse.response);
 				this.oStorage.removeAll();
-				this.oStorage.put("centro", oData);
+				this.oStorage.put("centro", oData.d);
 				this._oViewMain.setProperty("/busy", false);
 				
 				this._oViewMain.setProperty("/centroState", undefined);
@@ -374,10 +403,17 @@ sap.ui.define([
 				reject(oResponse);
 			}
 			
-			var sURL = 
-				sCentro ?
+			var sURL = ""; 
+			
+			if(this._oViewMain.getProperty("/viewType") === "ReCont"){
+				sURL = sCentro ?
+					`${this._sServiceURL}${this._sEntityInvent}?$format=json&$filter=((PostingDate lt datetime'0001-01-01T00:00:00' and PhysicalInventoryLastCountDate gt datetime'0001-01-01T00:00:00')and Plant eq '${sCentro}')` :
+					this._sServiceURL + this._sEntityInvent;
+			}else{
+				sURL = sCentro ?
 					this._sServiceURL + this._sEntityInvent + "?$format=json&$filter=" + this._getContagemInitFilter(sCentro) :
 					this._sServiceURL + this._sEntityInvent;
+			}
 				
 			var oRequest = new XMLHttpRequest();
 			oRequest.open('GET', 
@@ -430,11 +466,26 @@ sap.ui.define([
 								this.oFormatter.formatStringOdataDate(oObject.PhysInventoryPlannedCountDate);
 							
 							this._oViewContagem.setProperty("/contagem", oObject);
+							this.oStorage.put("contagem",oObject);
 						}
-						if(resolve){
-							resolve(oResponse);
-						}
-					} else {
+							if(resolve){
+								resolve(oResponse);
+							}
+						} else if (oData	&& 
+							oData.d && 
+							oData.d.__count	&&
+							oData.d.__count === "0"){
+							MessageBox.show( this._oResourceBundle.getText("msgNoInventory"), 
+								{
+									icon: sap.m.MessageBox.Icon.ERROR,
+									title: this._oResourceBundle.getText("msgError"),
+									actions: [sap.m.MessageBox.Action.CLOSE],
+									id: "msgNoInventory",
+									details: sMsg, 
+									styleClass: bCompact ? "sapUiSizeCompact" : ""
+								});
+							this._oViewMain.setProperty("/busy", false);
+						} else {
 						var sMsg = undefined; 
 						var bCompact = !!this.getView().$().closest(".sapUiSizeCompact").length;
 						if(	oData && oData.d) { 
@@ -476,9 +527,16 @@ sap.ui.define([
 				//this._oViewMain.setProperty("/busy", false);
 			}
 			
-			var sURL = 
+			var sURL;
+			if(this._oViewMain.getProperty("/viewType") === "ReCont"){
+				var sURL = 
+				`${this._sServiceURL}${this._sEntityPlanDate}?$filter=((PostingDate lt datetime'0001-01-01T00:00:00' 
+				and PhysicalInventoryLastCountDate gt datetime'0001-01-01T00:00:00')
+				and Plant eq '${sCentro}')&$inlinecount=allpages&$format=json`;
+			}else{
+				var sURL = 
 				`${this._sServiceURL}${this._sEntityPlanDate}?$filter=${this._getContagemInitFilter(sCentro)}&$inlinecount=allpages&$format=json`;
-				
+			}	
 			var oRequest = new XMLHttpRequest();
 			oRequest.open('GET', 
 				sURL,
@@ -530,6 +588,7 @@ sap.ui.define([
 		
 		onPressS2_PesquisaMaterial: function(oEvent){
 			var sMaterial = this._oViewContagem.getProperty("/inMaterial");
+			var sType = this._oViewMain.getProperty("/viewType");
 			if(sMaterial) {
 				var oPromise = new Promise(
 					function (resolve, reject) {
@@ -539,7 +598,7 @@ sap.ui.define([
 				
 				oPromise.then(
 					function () {
-						this._navPage("S3_ContarMaterial", true);
+						this._navPage("S3_ContarMaterial", sType, true);
 					}.bind(this), 
 					function () {
 						return;
@@ -549,49 +608,100 @@ sap.ui.define([
 		},
 		
 		onPressS2_ListaMateriais: function(){
+			var sType = this._oViewMain.getProperty("/viewType");
 			this._oViewListaMaterial.refresh();
-			this._navPage("S3_ListarMateriais", true);
+			this._navPage("S3_ListarMateriais", sType, true);
 		}, 
 		
-		onSaveContagem: function(oEvent) {
-			//_back();
-		}
+		fetchToken: function(){
+			this._oViewMain.setProperty("/busy", true);
+			var sURL = `${this._sServiceURL}/$metadata`
+			var oRequest = new XMLHttpRequest();
+			oRequest.open('GET',sURL,'async');
+			oRequest.setRequestHeader("x-csrf-token", "fetch");
+			
+			oRequest.onload = e => {
+				var token = oRequest.getResponseHeader("x-csrf-token");
+				this.sendPost(token);
+			};
+			
+			oRequest.onerror = e =>{
+				this._oViewMain.setProperty(false);
+				MessageBox.show( this._oResourceBundle.getText("msgTokenError"), 
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: this._oResourceBundle.getText("msgError"),
+						actions: [sap.m.MessageBox.Action.CLOSE],
+				});
+			};
+			
+			oRequest.send();
+		},
 		
-		/**
-		 * Called when a controller is instantiated and its View controls (if available) are already created.
-		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-		 * @memberOf imc.sap.mm.contageminventario.view.S1_MainScreen
-		 */
-		//	onInit: function() {
-		//
-		//	},
-
-		/**
-		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
-		 * (NOT before the first rendering! onInit() is used for that one!).
-		 * @memberOf imc.sap.mm.contageminventario.view.S1_MainScreen
-		 */
-		//	onBeforeRendering: function() {
-		//
-		//	},
-
-		/**
-		 * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
-		 * This hook is the same one that SAPUI5 controls get after being rendered.
-		 * @memberOf imc.sap.mm.contageminventario.view.S1_MainScreen
-		 */
-		//	onAfterRendering: function() {
-		//
-		//	},
-
-		/**
-		 * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-		 * @memberOf imc.sap.mm.contageminventario.view.S1_MainScreen
-		 */
-		//	onExit: function() {
-		//
-		//	}
-
+		sendPost: function(token){
+			var sURL = `${this._sServiceURL}${this._sEntityPlanDate}`
+			var oRequest = new XMLHttpRequest();
+			oRequest.open('POST',sURL,'async');
+			oRequest.setRequestHeader("x-csrf-token",token);
+			oRequest.setRequestHeader("Content-Type","application/json");
+			oRequest.setRequestHeader("Accept","application/json");
+			oRequest.onload = e => {
+				this._oViewMain.setProperty("/busy", false);
+				if(e.target.status == 201){
+					MessageBox.show( "Inventário enviado!", 
+					{
+						icon: sap.m.MessageBox.Icon.SUCCESS,
+						title: "Sincronizado com sucesso",
+						actions: [sap.m.MessageBox.Action.CLOSE]
+					});
+				}else{
+						MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: this._oResourceBundle.getText("msgError"),
+						actions: [sap.m.MessageBox.Action.CLOSE],
+						id: "msgGenericError",
+						details: oData,
+						styleClass: bCompact ? "sapUiSizeCompact" : "",
+						contentWidth: "auto"
+				});
+				}		
+			};
+			
+			oRequest.onerror = e =>{
+				this._oViewMain.setProperty("/busy", false);
+				MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: this._oResourceBundle.getText("msgError"),
+						actions: [sap.m.MessageBox.Action.CLOSE],
+						id: "msgGenericError",
+						details: oData,
+						styleClass: bCompact ? "sapUiSizeCompact" : "",
+						contentWidth: "auto"
+	
+				});
+			};
+			var centroStorage = this.oStorage.get("centro");
+			var materiaisStorage = this.oStorage.get("materiais");
+			materiaisStorage.forEach(element => {
+				element.QuantityCount = element.QuantityCount.toString();	
+			});
+			var jsonDataSend = JSON.stringify({
+				"Plant": centroStorage.d.Plant,
+				"PhysInventoryPlannedCountDate": "/Date(1562716800000)/",
+				"PlantName": centroStorage.d.PlantName,
+				"PostingDate": null,
+				"PhysicalInventoryLastCountDate": null,
+				"InventoryCount": materiaisStorage.length,
+				"to_InventoryCount": materiaisStorage,
+			});
+			oRequest.send(jsonDataSend);
+		},
+		
+		onPressS2_Sync: function(oEvent){
+			console.log("entrou");
+			this.fetchToken();
+		}
 	});
-
 });
