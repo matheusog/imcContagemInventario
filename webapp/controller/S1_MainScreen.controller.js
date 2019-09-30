@@ -93,10 +93,12 @@ sap.ui.define([
 			var oList = this.byId("listMaterial"),
 				oBinding = oList.getBinding("items"),
 				mParams = oEvent.getParameters(),
-				aFilters = [];
+				aFilters = [], 
+				aFiltersCurrent = [];
 			
-			if(oBinding.aFilters) {
-				aFilters = oBinding.aFilters;
+			//if(oBinding.aFilters) {
+			if(this._oViewListaMaterial.getProperty("/filterMaterial")) {
+				aFiltersCurrent = this._oViewListaMaterial.getProperty("/filterMaterial");
 			}
 			
 			mParams.filterItems.forEach(function(oItem) {
@@ -115,7 +117,13 @@ sap.ui.define([
 				}
 				
 			});
-
+			
+			this._oViewListaMaterial.setProperty("/filterUnit", aFilters);
+			aFilters = $.extend([], aFilters);
+			if(aFiltersCurrent){
+				aFiltersCurrent.forEach( oObj => aFilters.push(oObj) );
+			}
+			
 			oBinding.filter(aFilters);
 		}, 
 		
@@ -124,10 +132,12 @@ sap.ui.define([
 			//var sQuery = oEvent.getSource().getValue();
 			var oList = this.byId("listMaterial"); 
 			var oBinding = oList.getBinding("items");
-			var aFilters = [];
+			var aFilters = [], 
+				aFiltersCurrent = [];
 			
-			if(oBinding.aFilters) {
-				aFilters = oBinding.aFilters;
+			//if(oBinding.aFilters) {
+			if(this._oViewListaMaterial.getProperty("/filterUnit")) {
+				aFiltersCurrent = this._oViewListaMaterial.getProperty("/filterUnit");
 			}
 			if (sQuery && sQuery.length > 0) {
 				var oFilter = new Filter({
@@ -140,6 +150,11 @@ sap.ui.define([
 				aFilters.push(oFilter);
 			}
 			
+			this._oViewListaMaterial.setProperty("/filterMaterial", aFilters);
+			aFilters = $.extend([], aFilters);
+			if(aFiltersCurrent){
+				aFiltersCurrent.forEach( oObj => aFilters.push(oObj) );
+			}
 			oBinding.filter(aFilters);
 		}, 
 		
@@ -594,6 +609,7 @@ sap.ui.define([
 		}, 
 		
 		fetchToken: function(){
+			this._oViewMain.setProperty("/busy", true);
 			var sURL = `${this._sServiceURL}/$metadata`
 			var oRequest = new XMLHttpRequest();
 			oRequest.open('GET',sURL,'async');
@@ -605,7 +621,13 @@ sap.ui.define([
 			};
 			
 			oRequest.onerror = e =>{
-				console.log(e.message);
+				this._oViewMain.setProperty(false);
+				MessageBox.show( this._oResourceBundle.getText("msgTokenError"), 
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: this._oResourceBundle.getText("msgError"),
+						actions: [sap.m.MessageBox.Action.CLOSE],
+				});
 			};
 			
 			oRequest.send();
@@ -619,8 +641,9 @@ sap.ui.define([
 			oRequest.setRequestHeader("Content-Type","application/json");
 			oRequest.setRequestHeader("Accept","application/json");
 			oRequest.onload = e => {
+				this._oViewMain.setProperty("/busy", false);
 				if(e.target.status == 201){
-					MessageBox.show( "Sent", 
+					MessageBox.show( "Inventário enviado!", 
 					{
 						icon: sap.m.MessageBox.Icon.SUCCESS,
 						title: "Sincronizado com sucesso",
@@ -641,6 +664,7 @@ sap.ui.define([
 			};
 			
 			oRequest.onerror = e =>{
+				this._oViewMain.setProperty("/busy", false);
 				MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
 					{
 						icon: sap.m.MessageBox.Icon.ERROR,
