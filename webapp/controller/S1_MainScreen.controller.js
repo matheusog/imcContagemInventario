@@ -688,9 +688,9 @@ sap.ui.define([
 				element.QuantityCount = element.QuantityCount.toString();	
 			});
 			var jsonDataSend = JSON.stringify({
-				"Plant": centroStorage.d.Plant,
+				"Plant": centroStorage.Plant,
 				"PhysInventoryPlannedCountDate": "/Date(1562716800000)/",
-				"PlantName": centroStorage.d.PlantName,
+				"PlantName": centroStorage.PlantName,
 				"PostingDate": null,
 				"PhysicalInventoryLastCountDate": null,
 				"InventoryCount": materiaisStorage.length,
