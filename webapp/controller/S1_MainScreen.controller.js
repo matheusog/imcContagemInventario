@@ -221,9 +221,11 @@ sap.ui.define([
 							this._oToolPage.setSideExpanded(!this._oToolPage.getSideExpanded());
 						} 
 						if(sType === "Offline"){
-							this._oViewMain.setProperty("/centro/Plant", this.oStorage.get("centro").Plant);
+							this._oViewMain.setProperty("/centro", this.oStorage.get("centro"));
 							this._oViewListaMaterial.setProperty("/materiais", this.oStorage.get("materiais"));
-							this._oViewContagem.setProperty("/contagem", this.oStorage.get("contagem"));
+							var contagem = this.oStorage.get("contagem");
+							contagem.PhysInventoryPlannedCountDate = new Date(contagem.PhysInventoryPlannedCountDate);
+							this._oViewContagem.setProperty("/contagem", contagem);
 							this._oViewMain.setProperty("/busy",false);
 						}
 					}
@@ -286,8 +288,11 @@ sap.ui.define([
 		
 		_onConfirmCentro : function(oEvent) {
 			this._oViewMain.setProperty("/busy", true);
+			this._initialize();
+			this.oStorage.clear();
 			var sCentro = this._oViewMain.getProperty("/centro/Plant");
 			this._readDataPlant(sCentro);
+			this._oNavContainer.to(this.getView().createId("S1_empty"));
 		},
 		
 		_onFilterListPress : function(oEvent) {
@@ -336,7 +341,7 @@ sap.ui.define([
 			function onSuccess(oResponse) {
 				var oData = JSON.parse(oResponse.response);
 				this.oStorage.removeAll();
-				this.oStorage.put("centro", oData);
+				this.oStorage.put("centro", oData.d);
 				this._oViewMain.setProperty("/busy", false);
 				
 				this._oViewMain.setProperty("/centroState", undefined);
