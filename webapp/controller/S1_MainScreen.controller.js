@@ -409,10 +409,14 @@ sap.ui.define([
 				sURL = sCentro ?
 					`${this._sServiceURL}${this._sEntityInvent}?$format=json&$filter=((PostingDate lt datetime'0001-01-01T00:00:00' and PhysicalInventoryLastCountDate gt datetime'0001-01-01T00:00:00')and Plant eq '${sCentro}')` :
 					this._sServiceURL + this._sEntityInvent;
+				this.oStorage.remove("isRecontagem");
+				this.oStorage.put("isRecontagem", true);
 			}else{
 				sURL = sCentro ?
 					this._sServiceURL + this._sEntityInvent + "?$format=json&$filter=" + this._getContagemInitFilter(sCentro) :
 					this._sServiceURL + this._sEntityInvent;
+				this.oStorage.remove("isRecontagem");
+				this.oStorage.put("isRecontagem", false);
 			}
 				
 			var oRequest = new XMLHttpRequest();
@@ -694,6 +698,7 @@ sap.ui.define([
 				"PostingDate": null,
 				"PhysicalInventoryLastCountDate": null,
 				"InventoryCount": materiaisStorage.length,
+				"isRecontagem": this.oStorage.get("isRecontagem"),
 				"to_InventoryCount": materiaisStorage,
 			});
 			oRequest.send(jsonDataSend);
