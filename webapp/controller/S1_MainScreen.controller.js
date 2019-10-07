@@ -313,8 +313,20 @@ sap.ui.define([
 			if(oItem){ 
 				var sType = oItem.getKey().split("#")[1];
 				var sKey =  oItem.getKey().split("#")[0];
-				this._oViewMain.setProperty("/viewType",sType);
-				this._navPage(sKey, sType, false);
+				if(sType === "Cont"|| sType === "ReCont"){
+					MessageBox.show(
+						"Os dados em memória serão apagados. Deseja mesmo realizar a operação?", {
+						icon: MessageBox.Icon.INFORMATION,
+						title: "Atenção!",
+						actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+						onClose: sButton => { 
+							if(sButton === MessageBox.Action.YES){
+								this._oViewMain.setProperty("/viewType",sType);
+								this._navPage(sKey, sType, false);
+							}
+						}
+					});
+				}
 			}
 		}, 
 		
