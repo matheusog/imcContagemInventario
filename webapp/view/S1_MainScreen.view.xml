@@ -223,12 +223,17 @@
 						}"
 						submit="._onSubmitQuantity"
 						/>
+					<Input
+						id="inputData"
+						value="{viewContMaterial>/material/Input}"
+						visible="false"
+					></Input>
 				</f:content>
 			</f:SimpleForm>
 		</content>
 		<footer>
 			<OverflowToolbar>
-				<Button class="sapUiSmallMarginBegin" press="_back" text="{i18n>s2BtnVoltar}" type="Back"/>
+				<Button class="sapUiSmallMarginBegin" press="._back" text="{i18n>s2BtnVoltar}" type="Back"/>
 				<ToolbarSpacer/>
 				<Button class="sapUiSmallMarginEnd" press="_onSubmitQuantity" text="{i18n>s2BtnSalvar}" type="Accept"/>
 			</OverflowToolbar>

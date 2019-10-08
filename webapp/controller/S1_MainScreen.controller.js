@@ -41,6 +41,7 @@ sap.ui.define([
 		},
 		
 		_back : function(oEvent) {
+			this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/material/Input"));
 			this._oNavContainer.back();	
 			if(this._oNavContainer.currentPageIsTopPage()) {
 				this._initialize(); 
@@ -343,6 +344,7 @@ sap.ui.define([
 		}, 
 		
 		_onSubmitQuantity : function(oEvent) {
+			this._oViewContMaterial.setProperty("/material/Input",this._oViewContMaterial.getProperty("/material/QuantityCount"));
 			this._back();
 			this._oViewContagem.setProperty("/inMaterial", '');
 			this.onDataChangeModel(oEvent);
@@ -700,8 +702,14 @@ sap.ui.define([
 			};
 			var centroStorage = this.oStorage.get("centro");
 			var materiaisStorage = this.oStorage.get("materiais");
+			var listMateriaisEnviar =  [];
 			materiaisStorage.forEach(element => {
-				element.QuantityCount = element.QuantityCount.toString();	
+				element.QuantityCount = element.QuantityCount.toString();
+				if(element.UnitCount !== "" && this.oStorage.get("isRecontagem")){
+					listMateriaisEnviar.push(element);
+				}else if(!this.oStorage.get("isRecontagem")){
+					listMateriaisEnviar.push(element);
+				}
 			});
 			var jsonDataSend = JSON.stringify({
 				"Plant": centroStorage.Plant,
@@ -711,7 +719,7 @@ sap.ui.define([
 				"PhysicalInventoryLastCountDate": null,
 				"InventoryCount": materiaisStorage.length,
 				"isRecontagem": this.oStorage.get("isRecontagem"),
-				"to_InventoryCount": materiaisStorage,
+				"to_InventoryCount": listMateriaisEnviar,
 			});
 			oRequest.send(jsonDataSend);
 		},
