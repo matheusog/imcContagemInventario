@@ -327,6 +327,9 @@ sap.ui.define([
 							}
 						}
 					});
+				}else {
+					this._oViewMain.setProperty("/viewType",sType);
+					this._navPage(sKey, sType, true);
 				}
 			}
 		}, 
@@ -705,6 +708,7 @@ sap.ui.define([
 			var listMateriaisEnviar =  [];
 			materiaisStorage.forEach(element => {
 				element.QuantityCount = element.QuantityCount.toString();
+				delete element.Input;
 				if(element.UnitCount !== "" && this.oStorage.get("isRecontagem")){
 					listMateriaisEnviar.push(element);
 				}else if(!this.oStorage.get("isRecontagem")){
