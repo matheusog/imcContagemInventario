@@ -576,6 +576,7 @@ sap.ui.define([
 		},
 		
 		_searchMaterial : function(sMaterial, resolve, reject) {
+			this._oViewContMaterial.setProperty("/material","");
 			this._oViewListaMaterial.getProperty("/materiais").forEach(
 				function(oObject, iIndex) {
 					if(oObject.Material !== sMaterial) {
@@ -598,6 +599,12 @@ sap.ui.define([
 			if(this._oViewContMaterial.getProperty("/material")) {
 				resolve();	
 			} else {
+				MessageBox.show( this._oResourceBundle.getText("msgSearchError"), 
+					{
+						icon: sap.m.MessageBox.Icon.ERROR,
+						title: this._oResourceBundle.getText("msgError"),
+						actions: [sap.m.MessageBox.Action.CLOSE],
+				});
 				reject();
 			}
 		},

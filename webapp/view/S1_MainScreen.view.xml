@@ -221,7 +221,7 @@
 							type: 'sap.ui.model.type.Currency',
 							formatOptions: {showMeasure: false}
 						}"
-						submit="._onSubmitQuantity"
+						submit="_onSubmitQuantity"
 						/>
 					<Input
 						id="inputData"
