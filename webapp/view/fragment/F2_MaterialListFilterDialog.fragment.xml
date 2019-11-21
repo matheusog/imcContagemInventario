@@ -6,8 +6,9 @@
 		confirm="_handleFilterDialogConfirm"
 		busy="{viewListaMaterial>/busy}"
 		busyIndicatorDelay="{viewListaMaterial>/busyDelay}" >
-		<filterItems>
+		<filterItems hiddenFilter="true">
 			<ViewSettingsFilterItem
+				hiddenFilter="true"
 				text="{i18n>f2FilterContados}"
 				key="contagem"
 				multiSelect="false">

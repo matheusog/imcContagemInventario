@@ -38,7 +38,7 @@
 					</layoutData>
 				</Title>
 				<ToolbarSpacer/>
-				<Button 
+				<!--<Button 
 					type="Transparent"	
 					tooltip="{i18n>s1Configure}" 
 					icon="sap-icon://action-settings"
@@ -46,7 +46,7 @@
 					<layoutData>
 						<OverflowToolbarLayoutData priority="NeverOverflow" />
 					</layoutData>
-				</Button>
+				</Button>-->
 			</tnt:ToolHeader>	
 		</tnt:header>
 		<tnt:sideContent>
@@ -117,9 +117,10 @@
 				<Input
 					id="txb_Codigo"
 					value="{viewContagem>/inMaterial}"
-					type="Text"
+					type="Number"
 					submit="._onSubmitMaterial"
-					placeholder="{i18n>s2FldPhMaterial}">
+					placeholder="{i18n>s2FldPhMaterial}"
+					>
 				</Input>
 			</Flexbox>
 		</content> 
@@ -217,12 +218,22 @@
 					<Input
 						id="txb_Quantity"
 						value="{
-							parts: [ { path: 'viewContMaterial>/material/QuantityCount' }, {path: 'viewContMaterial>/material/UnitCount' } ], 
-							type: 'sap.ui.model.type.Currency',
-							formatOptions: {showMeasure: false}
+						    path: 'viewContMaterial>/material/QuantityCount',
+						    formatter: '.oFormatter.formatX'
 						}"
+						liveChange="handleLiveChangeQuantity"
 						submit="_onSubmitQuantity"
+						enabled="false"
 						/>
+					<Label text="{i18n>s3ContColQuantityAdd}" design="Bold" />
+					<Input
+						id="inputIncrement"
+						value="{viewContMaterial>/material/InputIncrement}"
+						visible="true"
+						liveChange="handleLiveChangeQuantity"
+						submit="_onSubmitQuantity"
+						type="Text"
+					/>
 					<Input
 						id="inputData"
 						value="{viewContMaterial>/material/Input}"
@@ -254,6 +265,9 @@
 					search="_handleSearchMaterial" />
 
 				<List
+					growing="true"
+					growingThreshold="300"
+					busyIndicatorDelay="500"
 					id="listMaterial"
 					items="{viewListaMaterial>/materiais}">
 					<headerToolbar>
@@ -278,7 +292,7 @@
 							number="{
 								parts:[{ path: 'viewListaMaterial>QuantityCount' }, { path: 'viewListaMaterial>UnitCount' }],
 								type: 'sap.ui.model.type.Currency',
-								formatter: '.oFormatter.formatQuantity',
+								formatter: '.oFormatter.formatX',
 								formatOptions: {showMeasure: false},
 								events:{ change: '.onDataChangeModel'}
 							}"

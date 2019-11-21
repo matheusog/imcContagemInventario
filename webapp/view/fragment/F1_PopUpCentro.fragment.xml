@@ -9,9 +9,9 @@
 		type="Standard"
 		>
 		<content>
-			<form:SimpleForm editable="true" layout="ResponsiveGridLayout" >
+			<form:SimpleForm editable="true" layout="ResponsiveGridLayout" > 
 				<!--labelSpanM="12" labelSpanL="12" labelSpanXL="12" emptySpanL="6" emptySpanM="6">-->
-				<form:content>
+				<form:content> 
 					<Label text="{i18n>f1InputLabel}" labelFor="inCentro"/>
 					<Input id="inCentro" 
 						submit="._onSubmitCentro" 
@@ -24,9 +24,10 @@
 							}
 						}" 
 						valueState="{viewMain>/centroState}" 
-						valueStateText="{viewMain>/centroStateMsg}" />
-				</form:content>
-			</form:SimpleForm>
+						valueStateText="{viewMain>/centroStateMsg}"
+						liveChange="_handleLiveChangeCentro"/>
+				</form:content> 
+			</form:SimpleForm> 
 		</content><!-- sap.ui.core.Control -->
 		<beginButton>
 			<Button 

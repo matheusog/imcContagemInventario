@@ -43,6 +43,8 @@ sap.ui.define([
 		_back : function(oEvent) {
 			this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/material/Input"));
 			this._oNavContainer.back();	
+			this._oViewContagem.setProperty("/inMaterial", '');
+			this.getView().byId("txb_Codigo").focus();
 			if(this._oNavContainer.currentPageIsTopPage()) {
 				this._initialize(); 
 			}
@@ -194,7 +196,7 @@ sap.ui.define([
 		
 		_getContagemInitFilter : function(sCentro) {
 			var sFilter = 
-				"(PostingDate lt datetime'0001-01-01T00:00:00' and PhysicalInventoryLastCountDate lt datetime'0001-01-01T00:00:00')";
+				"(PostingDate lt datetime'0001-01-01T00:00:00')";
 				
 			return sCentro && sCentro.trim() !== '' ?
 				`(${sFilter} and Plant eq '${sCentro}')` : 
@@ -209,6 +211,12 @@ sap.ui.define([
 			this._oViewContMaterial.setProperty("/unidades", []);
 			this._oViewListaMaterial.setProperty("/materiais", []);
 		}, 
+		
+		/*afterLoading : function(sKey){
+			if(sKey == "S2_Contagem"){
+				this.getView().byId("txb_Codigo").focus();	
+			}
+		},*/
 		
 		_navPage : function(sKey, sType, bOffline) {
 				
@@ -228,12 +236,14 @@ sap.ui.define([
 							contagem.PhysInventoryPlannedCountDate = new Date(contagem.PhysInventoryPlannedCountDate);
 							this._oViewContagem.setProperty("/contagem", contagem);
 							this._oViewMain.setProperty("/busy",false);
+							//this.afterLoading(sKey);
 						}
 					}
 					function navToOnline(sKey) {
 						navToOffline.bind(this)(sKey);
 						this._readInvent(sCentro);	
 						this._oViewMain.setProperty("/busy", false);
+						//this.afterLoading(sKey);
 					}
 					
 					if(bOffline || sType === "Offline") {
@@ -251,6 +261,7 @@ sap.ui.define([
 								function(oResponse) {
 									this._genericErrorDisplay(oResponse); 
 									this._oViewMain.setProperty("/busy", false);
+									//this.afterLoading(sKey);
 								}.bind(this)
 							);
 					}
@@ -291,6 +302,7 @@ sap.ui.define([
 			this._oViewMain.setProperty("/busy", true);
 			this._initialize();
 			this.oStorage.clear();
+			this._oViewMain.setProperty("/centro/Plant",this._oViewMain.getProperty("/centro/Plant").toUpperCase());
 			var sCentro = this._oViewMain.getProperty("/centro/Plant");
 			this._readDataPlant(sCentro);
 			this._oNavContainer.to(this.getView().createId("S1_empty"));
@@ -322,14 +334,28 @@ sap.ui.define([
 						actions: [MessageBox.Action.YES, MessageBox.Action.NO],
 						onClose: sButton => { 
 							if(sButton === MessageBox.Action.YES){
+								this._oViewMain.setProperty("/centro/Plant",undefined);
 								this._oViewMain.setProperty("/viewType",sType);
 								this._navPage(sKey, sType, false);
 							}
 						}
 					});
 				}else {
-					this._oViewMain.setProperty("/viewType",sType);
-					this._navPage(sKey, sType, true);
+					if(this.oStorage.get("materiais") != undefined){
+						MessageBox.show("Contagem recuperada",{
+							icon: MessageBox.Icon.INFORMATION,
+							title: "Sucesso!",
+							actions: [sap.m.MessageBox.Action.CLOSE]
+						});
+						this._oViewMain.setProperty("/viewType",sType);
+						this._navPage(sKey, sType, true);
+					}else{
+						MessageBox.show(
+						"Não existem dados em memória", {
+						icon: MessageBox.Icon.Error,
+						title: "Erro!",
+					});
+					}
 				}
 			}
 		}, 
@@ -347,9 +373,13 @@ sap.ui.define([
 		}, 
 		
 		_onSubmitQuantity : function(oEvent) {
+			var qtdCount = parseFloat(this._oViewContMaterial.getProperty("/material/QuantityCount".replace(',','.'))) || 0;
+			var qtdSomar = parseFloat(this._oViewContMaterial.getProperty("/material/InputIncrement").replace(',','.')) || 0;
+			this._oViewContMaterial.setProperty("/material/QuantityCount",qtdCount+qtdSomar);
 			this._oViewContMaterial.setProperty("/material/Input",this._oViewContMaterial.getProperty("/material/QuantityCount"));
+			this._oViewContMaterial.setProperty("/material/InputIncrement","");
 			this._back();
-			this._oViewContagem.setProperty("/inMaterial", '');
+			//this._oViewContagem.setProperty("/inMaterial", '');
 			this.onDataChangeModel(oEvent);
 		}, 
 		
@@ -380,6 +410,7 @@ sap.ui.define([
 				this._oViewMain.setProperty("/centroState", "Error");
 				this._oViewMain.setProperty("/centroStateMsg", 
 					this._oResourceBundle.getText("msgCentroNotFound", sCentro));
+				this._oDialogCentro.byId("inCentro").focus();
 			}
 		
 			var sURL = 
@@ -405,6 +436,9 @@ sap.ui.define([
 				if(oResponse.status === 200) {
 					if(oData && oData.d && oData.d.results) {
 						if(resolve){
+							oData.d.results.forEach(element => {
+								element.QuantityCount = undefined;
+							});
 							this._oViewListaMaterial.setProperty("/materiais", oData.d.results);
 							//this.oStorage.put("materiais",oData.d.results);
 							resolve(oResponse);
@@ -479,19 +513,61 @@ sap.ui.define([
 					if(	oData	&& 
 						oData.d && 
 						oData.d.__count	&&
-						oData.d.__count === "1") {
+						oData.d.__count >= "1") {
 						if(oData.d.results) {
-							var oObject =  oData.d.results[0];
 							
-							oObject.PhysInventoryPlannedCountDate = 
-								this.oFormatter.formatStringOdataDate(oObject.PhysInventoryPlannedCountDate);
+							var dataPlanejada = oData.d.results[0].PhysInventoryPlannedCountDate;
+							var flagDataCorreta = true;
 							
-							this._oViewContagem.setProperty("/contagem", oObject);
-							this.oStorage.put("contagem",oObject);
-						}
-							if(resolve){
-								resolve(oResponse);
+							oData.d.results.forEach(element =>{
+								if(element.PhysInventoryPlannedCountDate != dataPlanejada){
+									flagDataCorreta = false;
+								}	
+							});
+							
+							if(flagDataCorreta){
+								var oObject =  oData.d.results[0];
+							
+								oObject.PhysInventoryPlannedCountDate = 
+									this.oFormatter.formatStringOdataDate(oObject.PhysInventoryPlannedCountDate);
+								
+								this._oViewContagem.setProperty("/contagem", oObject);
+								this.oStorage.put("contagem",oObject);
+								if(resolve){
+									resolve(oResponse);
+								}
+							}else{
+								var sMsg = undefined; 
+								var bCompact = !!this.getView().$().closest(".sapUiSizeCompact").length;
+								if(	oData && oData.d) { 
+									if(oData.d.__count) {
+										sMsg = 
+											this._oResourceBundle.getText("msgPlannedCountDateNo", oData.d.__count);
+									}
+									if(oData.d.results && oData.d.results.length > 0) {
+										sMsg = sMsg.concat("<ul>"); 
+										oData.d.results.forEach(
+											function(oObject, iIndex) {
+												sMsg = sMsg.concat(
+													this._oResourceBundle.getText("msgPlannedCountdateRow", 
+														this.oFormatter.formatStringOdataDateDisplay(oObject.PhysInventoryPlannedCountDate))); 
+														//new sap.ui.model.type.Date(oObject.PhysInventoryPlannedCountDate)));
+											}.bind(this));
+										sMsg = sMsg.concat("</ul>");
+									}
+								}
+								MessageBox.show( this._oResourceBundle.getText("msgPlannedCountDateError"), 
+									{
+										icon: sap.m.MessageBox.Icon.ERROR,
+										title: this._oResourceBundle.getText("msgError"),
+										actions: [sap.m.MessageBox.Action.CLOSE],
+										id: "msgPlanDateError",
+										details: sMsg, 
+										styleClass: bCompact ? "sapUiSizeCompact" : ""
+								});
+								this._oViewMain.setProperty("/busy", false);
 							}
+						}
 						} else if (oData	&& 
 							oData.d && 
 							oData.d.__count	&&
@@ -577,6 +653,7 @@ sap.ui.define([
 		
 		_searchMaterial : function(sMaterial, resolve, reject) {
 			this._oViewContMaterial.setProperty("/material","");
+			
 			this._oViewListaMaterial.getProperty("/materiais").forEach(
 				function(oObject, iIndex) {
 					if(oObject.Material !== sMaterial) {
@@ -592,6 +669,21 @@ sap.ui.define([
 						oUnit.push({ Unit: oObject.MaterialAlternativeUnit });
 					}
 					
+					if(oObject.QuantityCount > 0 ){
+						MessageBox.show(
+							"já existe contagem para este inventário, deseja substituir ou adicionar ?", {
+							icon: MessageBox.Icon.INFORMATION,
+							title: "Atenção!",
+							actions: ["Substituir", "Adicionar"],
+							onClose: sButton => { 
+								if(sButton == "Substituir"){
+									oObject.Input = oObject.QuantityCount;
+									oObject.QuantityCount = 0;
+								}
+							}
+						});
+					}
+					
 					this._oViewContMaterial.setProperty("/unidades", oUnit);
 					this._oViewContMaterial.setProperty("/material", oObject);
 				}.bind(this)
@@ -605,6 +697,7 @@ sap.ui.define([
 						title: this._oResourceBundle.getText("msgError"),
 						actions: [sap.m.MessageBox.Action.CLOSE],
 				});
+				this._oViewContagem.setProperty("/inMaterial","");
 				reject();
 			}
 		},
@@ -642,7 +735,6 @@ sap.ui.define([
 		}, 
 		
 		fetchToken: function(){
-			this._oViewMain.setProperty("/busy", true);
 			var sURL = `${this._sServiceURL}/$metadata`
 			var oRequest = new XMLHttpRequest();
 			oRequest.open('GET',sURL,'async');
@@ -676,6 +768,7 @@ sap.ui.define([
 			oRequest.onload = e => {
 				this._oViewMain.setProperty("/busy", false);
 				if(e.target.status == 201){
+					this.oStorage.clear();
 					MessageBox.show( "Inventário enviado!", 
 					{
 						icon: sap.m.MessageBox.Icon.SUCCESS,
@@ -683,14 +776,13 @@ sap.ui.define([
 						actions: [sap.m.MessageBox.Action.CLOSE]
 					});
 				}else{
-						MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
+					MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
 					{
 						icon: sap.m.MessageBox.Icon.ERROR,
 						title: this._oResourceBundle.getText("msgError"),
 						actions: [sap.m.MessageBox.Action.CLOSE],
 						id: "msgGenericError",
-						details: oData,
-						styleClass: bCompact ? "sapUiSizeCompact" : "",
+						details: oRequest.response,
 						contentWidth: "auto"
 				});
 				}		
@@ -704,8 +796,7 @@ sap.ui.define([
 						title: this._oResourceBundle.getText("msgError"),
 						actions: [sap.m.MessageBox.Action.CLOSE],
 						id: "msgGenericError",
-						details: oData,
-						styleClass: bCompact ? "sapUiSizeCompact" : "",
+						details: oRequest.response,
 						contentWidth: "auto"
 	
 				});
@@ -714,11 +805,10 @@ sap.ui.define([
 			var materiaisStorage = this.oStorage.get("materiais");
 			var listMateriaisEnviar =  [];
 			materiaisStorage.forEach(element => {
-				element.QuantityCount = element.QuantityCount.toString();
 				delete element.Input;
-				if(element.UnitCount !== "" && this.oStorage.get("isRecontagem")){
-					listMateriaisEnviar.push(element);
-				}else if(!this.oStorage.get("isRecontagem")){
+				delete element.InputIncrement;
+				if(element.UnitCount !== ""){
+					element.QuantityCount = element.QuantityCount.toString();
 					listMateriaisEnviar.push(element);
 				}
 			});
@@ -736,8 +826,33 @@ sap.ui.define([
 		},
 		
 		onPressS2_Sync: function(oEvent){
-			console.log("entrou");
-			this.fetchToken();
+			MessageBox.show(
+						"Deseja realmente finalizar o inventário?", {
+						icon: MessageBox.Icon.INFORMATION,
+						title: "Atenção!",
+						actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+						onClose: sButton => { 
+							if(sButton === MessageBox.Action.YES){
+								this._oViewMain.setProperty("/busy", true);
+								this.fetchToken();
+							}
+						}
+			});
+		},
+		
+		handleLiveChangeQuantity: function(oEvent){
+			var _oInput = oEvent.getSource();
+			var val = _oInput.getValue();
+			val = val.replace(".", '');
+			val = val.replace(/^[a-zA-Z]*$/,'');
+			_oInput.setValue(val);
+		},
+		
+		_handleLiveChangeCentro: function(oEvent){
+			var _oInput = oEvent.getSource();
+			var val = _oInput.getValue();
+			this._oViewMain.setProperty("/centro/Plant",val);
 		}
+		
 	});
 });
