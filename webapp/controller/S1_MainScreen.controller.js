@@ -45,13 +45,38 @@ sap.ui.define([
 			    });
 			  };
 			}(jQuery));
-			
+			*/
+			/*
+			var oInput = this.getView().byId("inputIncrement");
+			oInput.addEventDelegate({
+				onAfterRendering: function(oEvent) {
+					if(sap.m.Input.prototype.onAfterRendering) {
+		    			sap.m.Input.prototype.onAfterRendering.apply(this, arguments);
+		    		} 
+		    		var oDOMEl = document.getElementById(oEvent.srcControl.getId()); 
+		    		oDOMEl.firstChild.firstElementChild.type	= "number";
+		    		oDOMEl.firstChild.firstElementChild.pattern = "\\d*"; //"/^-?\d*[,]?\d*$/"
+				}
+			})
+			*/
+			/*
 			var oInput = this.getView().byId("inputIncrement");
 			$(document).ready(function() {
 				$("#" + oInput.getId()).inputFilter(function(value) {
 					return /^-?\d*[,]?\d*$/.test(value); });
 			} );
 			*/
+			var oInput = this.getView().byId("inputIncrement");
+			oInput.addEventDelegate({
+				onAfterRendering: function(oEvent) {
+					if(sap.m.Input.prototype.onAfterRendering) {
+		    			sap.m.Input.prototype.onAfterRendering.apply(this, arguments);
+		    		} 
+		    		oEvent.srcControl.$().keydown(function(evt){
+						return (evt.keyCode !== 190);
+					});
+				}
+			});
 		},
 		
 		onAfterNavigate: function(oEvent) {
@@ -904,7 +929,7 @@ sap.ui.define([
 			var _oInput = oEvent.getSource();
 			var sValue = _oInput.getValue();
 			
-			if((sValue && /^-?\d*[,]?\d*$/.test(sValue)) || !sValue) {
+			if((sValue && /^-?\d*[.]?\d*$/.test(sValue)) || !sValue) {
 				_oInput._oOldValue = sValue;
 			} else {
 				_oInput.setValue(_oInput._oOldValue);
