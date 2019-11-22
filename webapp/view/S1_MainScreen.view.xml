@@ -61,7 +61,8 @@
 		<tnt:mainContents>
 			<NavContainer 
 				id="idAppControl"
-				initialPage="S1_empty" >
+				initialPage="S1_empty" 
+				afterNavigate=".onAfterNavigate">
 				<pages>
 				<Page id="S1_empty" 
 					showHeader="false" 
@@ -232,7 +233,7 @@
 						visible="true"
 						liveChange="handleLiveChangeQuantity"
 						submit="_onSubmitQuantity"
-						type="Text"
+						type="Number"
 					/>
 					<Input
 						id="inputData"

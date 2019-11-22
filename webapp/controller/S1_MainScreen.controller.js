@@ -29,6 +29,12 @@ sap.ui.define([
 			//this._oViewMain.setProperty("/visible", true);
 		},
 		
+		onAfterNavigate: function(oEvent) {
+			var sId = oEvent.getParameter("toId");
+			sId = sId.substring(sId.lastIndexOf("S1_MainScreen--") + 15);
+			this._defineInitialFocus(sId); 
+		}, 
+		
 		onDataChangeModel: function(oEvent){
 			var o2= oEvent.getParameters();
 			var stData = this._oViewListaMaterial.getProperty("/materiais");
@@ -44,7 +50,7 @@ sap.ui.define([
 			this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/material/Input"));
 			this._oNavContainer.back();	
 			this._oViewContagem.setProperty("/inMaterial", '');
-			this.getView().byId("txb_Codigo").focus();
+			//this.getView().byId("txb_Codigo").focus();
 			if(this._oNavContainer.currentPageIsTopPage()) {
 				this._initialize(); 
 			}
@@ -91,6 +97,31 @@ sap.ui.define([
 			this._oViewListaMaterial = Models.createViewModel();
 			this.getView().setModel(this._oViewListaMaterial, "viewListaMaterial");
 		}, 
+		
+		_defineInitialFocus: function(sKey) {
+			var oInput = undefined;
+			switch(sKey) {
+				case "S2_Contagem":
+					oInput = this.getView().byId("txb_Codigo");
+					break;
+				case "S3_ContarMaterial": 
+					//oInput = this.getView().byId("inputIncrement");
+					break;
+			}
+			
+			if(oInput) {
+				jQuery.sap.delayedCall(500, this, function() {
+					oInput.focus();
+				});
+				/*
+				oInput.addEventDelegate({
+					onAfterRendering: function(oEvent) {
+						oEvent.srcControl.focus();
+					}
+				});
+				*/
+			}
+		},
 		
 		_handleFilterDialogConfirm : function(oEvent) {
 			var oList = this.byId("listMaterial"),
@@ -212,12 +243,6 @@ sap.ui.define([
 			this._oViewListaMaterial.setProperty("/materiais", []);
 		}, 
 		
-		/*afterLoading : function(sKey){
-			if(sKey == "S2_Contagem"){
-				this.getView().byId("txb_Codigo").focus();	
-			}
-		},*/
-		
 		_navPage : function(sKey, sType, bOffline) {
 				
 				var sCentro = this._oViewMain.getProperty("/centro/Plant");
@@ -226,6 +251,8 @@ sap.ui.define([
 				} else {
 					function navToOffline(sKey) {
 						this._oNavContainer.to(this.getView().createId(sKey));
+						this._defineInitialFocus(sKey);
+						
 						if(this._oToolPage.getSideExpanded()) {
 							this._oToolPage.setSideExpanded(!this._oToolPage.getSideExpanded());
 						} 
@@ -283,11 +310,17 @@ sap.ui.define([
 		_onConfigPress : function(oEvent, fnCallback) {
 			if (!this._oDialogCentro) {
 				this._oDialogCentro = 
-					sap.ui.xmlfragment("imc.sap.mm.contageminventario.view.fragment.F1_PopUpCentro", this);
+					sap.ui.xmlfragment(this.getView().getId(), "imc.sap.mm.contageminventario.view.fragment.F1_PopUpCentro", this);
 				if (Device.system.desktop) {
 					this._oDialogCentro.addStyleClass("sapUiSizeCompact");
 				}
 				this.getView().addDependent(this._oDialogCentro);
+				var oInput = this.getView().byId('inCentro');
+				oInput.addEventDelegate({
+					onAfterRendering: function(oEvent) {
+						oEvent.srcControl.focus();
+					}
+				});
 			}
 			if(this._oViewMain.getProperty("/centro/Plant")) {
 				this._oViewMain.setProperty("/centroOld", this._oViewMain.getProperty("/centro/Plant"));	
@@ -410,7 +443,8 @@ sap.ui.define([
 				this._oViewMain.setProperty("/centroState", "Error");
 				this._oViewMain.setProperty("/centroStateMsg", 
 					this._oResourceBundle.getText("msgCentroNotFound", sCentro));
-				this._oDialogCentro.byId("inCentro").focus();
+				var oInput = this.getView().byId('inCentro');
+				oInput.focus();
 			}
 		
 			var sURL = 
@@ -458,7 +492,7 @@ sap.ui.define([
 			
 			if(this._oViewMain.getProperty("/viewType") === "ReCont"){
 				sURL = sCentro ?
-					`${this._sServiceURL}${this._sEntityInvent}?$format=json&$filter=((PostingDate lt datetime'0001-01-01T00:00:00' and PhysicalInventoryLastCountDate gt datetime'0001-01-01T00:00:00')and Plant eq '${sCentro}')` :
+					`${this._sServiceURL}${this._sEntityInvent}?$format=json&$filter=((PostingDate lt datetime'0001-01-01T00:00:00' and PhysicalInventoryLastCountDate gt datetime'0001-01-01T00:00:00')and Plant eq '${sCentro}')&$orderby=MaterialName` :
 					this._sServiceURL + this._sEntityInvent;
 				this.oStorage.remove("isRecontagem");
 				this.oStorage.put("isRecontagem", true);
@@ -768,7 +802,8 @@ sap.ui.define([
 			oRequest.onload = e => {
 				this._oViewMain.setProperty("/busy", false);
 				if(e.target.status == 201){
-					this.oStorage.clear();
+					//this.oStorage.clear();
+					this._back();
 					MessageBox.show( "Inventário enviado!", 
 					{
 						icon: sap.m.MessageBox.Icon.SUCCESS,
