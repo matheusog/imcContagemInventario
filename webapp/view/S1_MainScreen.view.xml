@@ -223,18 +223,24 @@
 						    formatter: '.oFormatter.formatX'
 						}"
 						liveChange="handleLiveChangeQuantity"
-						submit="_onSubmitQuantity"
 						enabled="false"
+						type="Number"
 						/>
 					<Label text="{i18n>s3ContColQuantityAdd}" design="Bold" />
 					<Input
 						id="inputIncrement"
-						value="{viewContMaterial>/material/InputIncrement}"
-						visible="true"
 						liveChange="handleLiveChangeQuantity"
-						submit="_onSubmitQuantity"
-						type="Number"
-					/>
+						value="{viewContMaterial>/material/InputIncrement}"
+						visible="true" />
+						<!--placeholderSymbol=""
+						mask="~~~~~~~~~~~~"
+					>
+						<rules>
+							<MaskInputRule maskFormatSymbol="~" regex="^-?\d*[,]?\d*$"/>
+						</rules>
+					</MaskInput>-->
+					<!--type="Number" liveChange="handleLiveChangeQuantity"-->
+					<!--submit="_onSubmitQuantity"-->
 					<Input
 						id="inputData"
 						value="{viewContMaterial>/material/Input}"

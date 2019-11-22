@@ -27,6 +27,31 @@ sap.ui.define([
 			this.oStorage = new Storage(Storage.Type.local, "imcLocalDB");
 			this.byId("listMaterial").getBinding("items").attachChange(e => this._bindingUpdated(e));
 			//this._oViewMain.setProperty("/visible", true);
+			
+			/*
+			(function($) {
+			  $.fn.inputFilter = function(inputFilter) {
+			    return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+			      if (inputFilter(this.value)) {
+			        this.oldValue = this.value;
+			        this.oldSelectionStart = this.selectionStart;
+			        this.oldSelectionEnd = this.selectionEnd;
+			      } else if (this.hasOwnProperty("oldValue")) {
+			        this.value = this.oldValue;
+			        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+			      } else {
+			        this.value = "";
+			      }
+			    });
+			  };
+			}(jQuery));
+			
+			var oInput = this.getView().byId("inputIncrement");
+			$(document).ready(function() {
+				$("#" + oInput.getId()).inputFilter(function(value) {
+					return /^-?\d*[,]?\d*$/.test(value); });
+			} );
+			*/
 		},
 		
 		onAfterNavigate: function(oEvent) {
@@ -877,10 +902,19 @@ sap.ui.define([
 		
 		handleLiveChangeQuantity: function(oEvent){
 			var _oInput = oEvent.getSource();
+			var sValue = _oInput.getValue();
+			
+			if((sValue && /^-?\d*[,]?\d*$/.test(sValue)) || !sValue) {
+				_oInput._oOldValue = sValue;
+			} else {
+				_oInput.setValue(_oInput._oOldValue);
+			}
+			/*
 			var val = _oInput.getValue();
 			val = val.replace(".", '');
 			val = val.replace(/^[a-zA-Z]*$/,'');
 			_oInput.setValue(val);
+			*/
 		},
 		
 		_handleLiveChangeCentro: function(oEvent){
