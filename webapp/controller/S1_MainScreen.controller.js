@@ -498,7 +498,7 @@ sap.ui.define([
 				this.oStorage.put("isRecontagem", true);
 			}else{
 				sURL = sCentro ?
-					this._sServiceURL + this._sEntityInvent + "?$format=json&$filter=" + this._getContagemInitFilter(sCentro) :
+					this._sServiceURL + this._sEntityInvent + "?$format=json&$filter=" + this._getContagemInitFilter(sCentro) + '&$orderby=MaterialName':
 					this._sServiceURL + this._sEntityInvent;
 				this.oStorage.remove("isRecontagem");
 				this.oStorage.put("isRecontagem", false);
