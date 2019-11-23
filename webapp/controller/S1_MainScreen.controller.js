@@ -125,11 +125,13 @@ sap.ui.define([
 		},
 		
 		_callFailed : function(oXmlHttpReq, fnError, oResponse) {
-				
+			this._genericErrorDisplay(oXmlHttpReq);
+			fnError(this);
 		}, 
 		
 		_callCanceled : function(oXmlHttpReq, fnError, oResponse){
-				
+			this._genericErrorDisplay(oXmlHttpReq);
+			fnError(this);
 		}, 
 		
 		_createInitialViews : function() {
@@ -487,16 +489,19 @@ sap.ui.define([
 					this._fnCallback = undefined;
 				}
 			}
-		
+			
 			function onError(sCentro, oResponse) {
 				this._oViewMain.setProperty("/busy", false);
-				this._oViewMain.setProperty("/centroState", "Error");
-				this._oViewMain.setProperty("/centroStateMsg", 
-					this._oResourceBundle.getText("msgCentroNotFound", sCentro));
 				var oInput = this.getView().byId('inCentro');
 				oInput.focus();
 			}
-		
+			
+			function onCallError(sCentro, oResponse) {
+				this._oViewMain.setProperty("/centroState", "Error");
+				this._oViewMain.setProperty("/centroStateMsg", 
+					this._oResourceBundle.getText("msgCentroNotFound", sCentro));
+				onError.bind(this)(sCentro, oResponse)
+			}
 			var sURL = 
 					this._sServiceURL + this._sEntityPlant + "('" + sCentro + "')?$format=json";
 				
@@ -506,7 +511,7 @@ sap.ui.define([
 				'async');
 			
 			
-			oRequest.addEventListener("load", this._callSuccess.bind(this, oRequest, onSuccess.bind(this), onError.bind(this, sCentro)));
+			oRequest.addEventListener("load", this._callSuccess.bind(this, oRequest, onSuccess.bind(this), onCallError.bind(this, sCentro)));
 			oRequest.addEventListener("error", this._callFailed.bind(this, oRequest, onError.bind(this, sCentro)));
 			oRequest.addEventListener("abort", this._callCanceled.bind(this, oRequest, onError.bind(this, sCentro)));
 			
@@ -534,7 +539,9 @@ sap.ui.define([
 			}
 			
 			function onError(oResponse) {
-				var oData = JSON.parse(oResponse.response);
+				if(oResponse.response) {
+					var oData = JSON.parse(oResponse.response);
+				}
 				reject(oResponse);
 			}
 			
