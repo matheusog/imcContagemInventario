@@ -93,7 +93,10 @@ sap.ui.define([
 		
 		_bindingUpdated: function(oEvent){
 			var o1 = oEvent.getParameters();
-			this.oStorage.put("materiais",oEvent.getSource().getModel().getProperty("/materiais"));
+			var aData = oEvent.getSource().getModel().getProperty("/materiais");
+			if(aData && aData.length > 0) {
+				this.oStorage.put("materiais", aData);
+			}
 		},
 		
 		_back : function(oEvent) {
@@ -426,7 +429,7 @@ sap.ui.define([
 						}
 					});
 				}else {
-					if(this.oStorage.get("materiais") != undefined){
+					if(this.oStorage.get("materiais") !== undefined){
 						MessageBox.show("Contagem recuperada",{
 							icon: MessageBox.Icon.INFORMATION,
 							title: "Sucesso!",
@@ -463,6 +466,20 @@ sap.ui.define([
 			this._oViewContMaterial.setProperty("/material/QuantityCount",qtdCount+qtdSomar);
 			this._oViewContMaterial.setProperty("/material/Input",this._oViewContMaterial.getProperty("/material/QuantityCount"));
 			this._oViewContMaterial.setProperty("/material/InputIncrement","");
+
+			this._oViewListaMaterial.getProperty("/materiais").forEach(
+				function(oObject, iIndex) {
+					if(oObject.Material !== this._oViewContMaterial.getProperty("/material/Material" )) {
+						return; 
+					}
+
+					oObject = this._oViewContMaterial.getProperty("/material");
+
+					var sPath = "/materiais/" + iIndex;
+					this._oViewListaMaterial.setProperty(sPath, oObject);
+				}.bind(this)
+			);
+
 			this._back();
 			//this._oViewContagem.setProperty("/inMaterial", '');
 			this.onDataChangeModel(oEvent);
@@ -837,7 +854,7 @@ sap.ui.define([
 			};
 			
 			oRequest.onerror = e =>{
-				this._oViewMain.setProperty(false);
+				this._oViewMain.setProperty("/busy", false);
 				MessageBox.show( this._oResourceBundle.getText("msgTokenError"), 
 					{
 						icon: sap.m.MessageBox.Icon.ERROR,
