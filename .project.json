@@ -45,12 +45,12 @@
     "blockPushLevel": "Error"
   },
   "build": {
-    "buildRequired": true,
+    "buildRequired": false,
     "sourceFolder": "webapp",
     "targetFolder": "dist",
     "excludedFolders": [],
     "excludedFiles": [],
-    "lastBuildDateTime": "Sat, 23 Nov 2019 01:21:29 GMT"
+    "lastBuildDateTime": "Mon, 25 Nov 2019 22:38:09 GMT"
   },
   "mockpreview": {
     "mockUri": "/sap/opu/odata/sap/Z_MM_TEST_CDS",

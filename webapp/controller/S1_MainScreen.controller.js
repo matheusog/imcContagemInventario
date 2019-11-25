@@ -160,7 +160,7 @@ sap.ui.define([
 					oInput = this.getView().byId("txb_Codigo");
 					break;
 				case "S3_ContarMaterial": 
-					//oInput = this.getView().byId("inputIncrement");
+					oInput = this.getView().byId("inputIncrement");
 					break;
 			}
 			
@@ -389,7 +389,6 @@ sap.ui.define([
 		_onConfirmCentro : function(oEvent) {
 			this._oViewMain.setProperty("/busy", true);
 			this._initialize();
-			this.oStorage.clear();
 			this._oViewMain.setProperty("/centro/Plant",this._oViewMain.getProperty("/centro/Plant").toUpperCase());
 			var sCentro = this._oViewMain.getProperty("/centro/Plant");
 			this._readDataPlant(sCentro);
@@ -433,10 +432,13 @@ sap.ui.define([
 						MessageBox.show("Contagem recuperada",{
 							icon: MessageBox.Icon.INFORMATION,
 							title: "Sucesso!",
-							actions: [sap.m.MessageBox.Action.CLOSE]
+							actions: [sap.m.MessageBox.Action.CLOSE],
+							onClose: sButton => {
+								this._oViewMain.setProperty("/viewType",sType);
+								this._navPage(sKey, sType, true);
+							}
+							
 						});
-						this._oViewMain.setProperty("/viewType",sType);
-						this._navPage(sKey, sType, true);
 					}else{
 						MessageBox.show(
 						"Não existem dados em memória", {
@@ -489,6 +491,7 @@ sap.ui.define([
 			
 			function onSuccess(oResponse) {
 				var oData = JSON.parse(oResponse.response);
+				this.oStorage.clear();
 				this.oStorage.removeAll();
 				this.oStorage.put("centro", oData.d);
 				this._oViewMain.setProperty("/busy", false);
@@ -788,6 +791,7 @@ sap.ui.define([
 									oObject.Input = oObject.QuantityCount;
 									oObject.QuantityCount = 0;
 								}
+								this._defineInitialFocus("S3_ContarMaterial");
 							}
 						});
 					}
@@ -806,6 +810,7 @@ sap.ui.define([
 						actions: [sap.m.MessageBox.Action.CLOSE],
 				});
 				this._oViewContagem.setProperty("/inMaterial","");
+				this._defineInitialFocus("S2_Contagem");
 				reject();
 			}
 		},

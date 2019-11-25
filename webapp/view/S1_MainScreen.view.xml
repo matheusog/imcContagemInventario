@@ -127,11 +127,11 @@
 		</content> 
 		<footer>
 			<OverflowToolbar>
-				<Button class="sapUiSmallMarginBegin" press="_back" text="{i18n>s2BtnVoltar}" type="Back">
+				<!--<Button class="sapUiSmallMarginBegin" press="_back" text="{i18n>s2BtnVoltar}" type="Back">
 					<layoutData>
 						<OverflowToolbarLayoutData priority="NeverOverflow" />
 					</layoutData>
-				</Button>
+				</Button>-->
 				<ToolbarSpacer/>
 				<Button
 					id="btn_PesquisaMaterial"
