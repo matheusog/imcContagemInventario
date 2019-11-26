@@ -371,11 +371,11 @@ sap.ui.define([
 				}
 				this.getView().addDependent(this._oDialogCentro);
 				var oInput = this.getView().byId('inCentro');
-				oInput.addEventDelegate({
+				/*oInput.addEventDelegate({
 					onAfterRendering: function(oEvent) {
 						oEvent.srcControl.focus();
 					}
-				});
+				});*/
 			}
 			if(this._oViewMain.getProperty("/centro/Plant")) {
 				this._oViewMain.setProperty("/centroOld", this._oViewMain.getProperty("/centro/Plant"));	
