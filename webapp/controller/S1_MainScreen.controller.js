@@ -371,11 +371,14 @@ sap.ui.define([
 				}
 				this.getView().addDependent(this._oDialogCentro);
 				var oInput = this.getView().byId('inCentro');
-				/*oInput.addEventDelegate({
+				oInput.addEventDelegate({
 					onAfterRendering: function(oEvent) {
-						oEvent.srcControl.focus();
+						jQuery.sap.delayedCall(500, this, function() {
+							oEvent.srcControl.focus();
+						});
+						
 					}
-				});*/
+				});
 			}
 			if(this._oViewMain.getProperty("/centro/Plant")) {
 				this._oViewMain.setProperty("/centroOld", this._oViewMain.getProperty("/centro/Plant"));	
@@ -513,7 +516,10 @@ sap.ui.define([
 			function onError(sCentro, oResponse) {
 				this._oViewMain.setProperty("/busy", false);
 				var oInput = this.getView().byId('inCentro');
-				oInput.focus();
+				jQuery.sap.delayedCall(500, this, function() {
+					oInput.focus();
+				});
+				
 			}
 			
 			function onCallError(sCentro, oResponse) {
@@ -780,9 +786,19 @@ sap.ui.define([
 						oUnit.push({ Unit: oObject.MaterialAlternativeUnit });
 					}
 					
-					if(oObject.QuantityCount > 0 ){
-						MessageBox.show(
-							"já existe contagem para este inventário, deseja substituir ou adicionar ?", {
+					/*if(oObject.QuantityCount > 0 ){
+						
+					}*/
+					
+					this._oViewContMaterial.setProperty("/unidades", oUnit);
+					this._oViewContMaterial.setProperty("/material", oObject);
+				}.bind(this)
+			);
+			if(this._oViewContMaterial.getProperty("/material")) {
+				var oObject = this._oViewContMaterial.getProperty("/material");
+				if(oObject.QuantityCount > 0) {
+					MessageBox.show(
+							"Já existe contagem para este inventário, deseja substituir ou adicionar ?", {
 							icon: MessageBox.Icon.INFORMATION,
 							title: "Atenção!",
 							actions: ["Substituir", "Adicionar"],
@@ -791,27 +807,26 @@ sap.ui.define([
 									oObject.Input = oObject.QuantityCount;
 									oObject.QuantityCount = 0;
 								}
-								this._defineInitialFocus("S3_ContarMaterial");
+								//this._defineInitialFocus("S3_ContarMaterial");
+								this._oViewContMaterial.setProperty("/material", oObject);
+								resolve();
 							}
 						});
-					}
-					
-					this._oViewContMaterial.setProperty("/unidades", oUnit);
-					this._oViewContMaterial.setProperty("/material", oObject);
-				}.bind(this)
-			);
-			if(this._oViewContMaterial.getProperty("/material")) {
-				resolve();	
+				} else {
+					resolve();
+				}
+				
 			} else {
 				MessageBox.show( this._oResourceBundle.getText("msgSearchError"), 
 					{
 						icon: sap.m.MessageBox.Icon.ERROR,
 						title: this._oResourceBundle.getText("msgError"),
 						actions: [sap.m.MessageBox.Action.CLOSE],
+						onClose: sButton => { 
+							this._oViewContagem.setProperty("/inMaterial","");
+							reject();
+						}						
 				});
-				this._oViewContagem.setProperty("/inMaterial","");
-				this._defineInitialFocus("S2_Contagem");
-				reject();
 			}
 		},
 		
@@ -835,6 +850,7 @@ sap.ui.define([
 						this._navPage("S3_ContarMaterial", sType, true);
 					}.bind(this), 
 					function () {
+						this._defineInitialFocus("S2_Contagem");
 						return;
 					}.bind(this)
 				);
