@@ -103,9 +103,11 @@ sap.ui.define([
 			if(this._oViewContMaterial.getProperty("/material/Input")){
 				this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/material/Input"));
 			}
-			if(this._oViewContMaterial.getProperty("/material/originalCount")){
-				this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/material/originalCount"));
-			} 
+			/*if(this._oViewContMaterial.getProperty("/originalCount")){
+				this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/originalCount"));
+			}*/
+			this._oViewContMaterial.setProperty("/material/Input", ''); 
+			this._oViewContMaterial.setProperty("/material/InputIncrement", '');
 			this._oNavContainer.back();	
 			this._oViewContagem.setProperty("/inMaterial", '');
 			//this.getView().byId("txb_Codigo").focus();
