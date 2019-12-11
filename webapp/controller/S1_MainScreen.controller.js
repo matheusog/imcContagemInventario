@@ -100,7 +100,12 @@ sap.ui.define([
 		},
 		
 		_back : function(oEvent) {
-			this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/material/Input"));
+			if(this._oViewContMaterial.getProperty("/material/Input")){
+				this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/material/Input"));
+			}
+			if(this._oViewContMaterial.getProperty("/material/originalCount")){
+				this._oViewContMaterial.setProperty("/material/QuantityCount",this._oViewContMaterial.getProperty("/material/originalCount"));
+			} 
 			this._oNavContainer.back();	
 			this._oViewContagem.setProperty("/inMaterial", '');
 			//this.getView().byId("txb_Codigo").focus();
@@ -777,7 +782,8 @@ sap.ui.define([
 						return; 
 					}
 					
-					var oUnit = []; 
+					var oUnit = [], 
+						oQuantity = 0; 
 					if(oObject.MaterialBaseUnit) {
 						oUnit.push({ Unit: oObject.MaterialBaseUnit });
 						oObject.UnitCount = oObject.MaterialBaseUnit;
@@ -785,12 +791,15 @@ sap.ui.define([
 					if(oObject.MaterialAlternativeUnit) {
 						oUnit.push({ Unit: oObject.MaterialAlternativeUnit });
 					}
-					
+					if(oObject.QuantityCount) {
+						oQuantity = oObject.QuantityCount;
+					}
 					/*if(oObject.QuantityCount > 0 ){
 						
 					}*/
 					
 					this._oViewContMaterial.setProperty("/unidades", oUnit);
+					this._oViewContMaterial.setProperty("/originalCount", oQuantity);
 					this._oViewContMaterial.setProperty("/material", oObject);
 				}.bind(this)
 			);
