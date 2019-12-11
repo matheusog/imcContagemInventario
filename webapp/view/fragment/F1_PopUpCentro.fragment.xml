@@ -9,26 +9,6 @@
 		type="Standard"
 		>
 		<content>
-<<<<<<< HEAD
-			<form:SimpleForm editable="true" layout="ResponsiveGridLayout" >
-				<!--labelSpanM="12" labelSpanL="12" labelSpanXL="12" emptySpanL="6" emptySpanM="6">-->
-				<form:content>
-					<Label text="{i18n>f1InputLabel}" labelFor="inCentro"/>
-					<Input id="inCentro" 
-						submit="._onSubmitCentro" 
-						value="{
-							model: 'viewMain',
-							path: '/centro/Plant',
-							type: 'sap.ui.model.type.String',
-							constraints: {
-								maxLength: 4
-							}
-						}" 
-						valueState="{viewMain>/centroState}" 
-						valueStateText="{viewMain>/centroStateMsg}" />
-				</form:content>
-			</form:SimpleForm>
-=======
 			<form:SimpleForm editable="true" layout="ResponsiveGridLayout" > 
 				<!--labelSpanM="12" labelSpanL="12" labelSpanXL="12" emptySpanL="6" emptySpanM="6">-->
 				<form:content> 
@@ -48,7 +28,6 @@
 						liveChange="_handleLiveChangeCentro"/>
 				</form:content> 
 			</form:SimpleForm> 
->>>>>>> 2b0a0f38c4ddf2a9734bf95b806b4119b95866ba
 		</content><!-- sap.ui.core.Control -->
 		<beginButton>
 			<Button 
