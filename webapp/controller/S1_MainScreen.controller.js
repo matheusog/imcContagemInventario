@@ -199,13 +199,16 @@ sap.ui.define([
 			
 			mParams.filterItems.forEach(function(oItem) {
 				var oFilter = undefined,
-					sPath = "UnitCount",
 					sOperator = sap.ui.model.FilterOperator.EQ,
-					sValue1 = "";	
+					sPath = "Processed",
+					sValue1 = true;
+					//sPath = "UnitCount",
+					//sValue1 = "";	
 				if(oItem.getKey() === "contOrig"){
+					sOperator = sap.ui.model.FilterOperator.NE;
 					oFilter = new Filter(sPath, sOperator, sValue1, null);
 				} else if (oItem.getKey() === "contAlter") {
-					sOperator = sap.ui.model.FilterOperator.NE;
+					//sOperator = sap.ui.model.FilterOperator.NE;
 					oFilter = new Filter(sPath, sOperator, sValue1, null);
 				}
 				if(oFilter){
@@ -478,7 +481,8 @@ sap.ui.define([
 			this._oViewContMaterial.setProperty("/material/QuantityCount",qtdCount+qtdSomar);
 			this._oViewContMaterial.setProperty("/material/Input",this._oViewContMaterial.getProperty("/material/QuantityCount"));
 			this._oViewContMaterial.setProperty("/material/InputIncrement","");
-
+			this._oViewContMaterial.setProperty("/material/Processed", true);
+			
 			this._oViewListaMaterial.getProperty("/materiais").forEach(
 				function(oObject, iIndex) {
 					if(oObject.Material !== this._oViewContMaterial.getProperty("/material/Material" )) {
@@ -560,6 +564,7 @@ sap.ui.define([
 						if(resolve){
 							oData.d.results.forEach(element => {
 								element.QuantityCount = undefined;
+								element.Processed = false;
 							});
 							this._oViewListaMaterial.setProperty("/materiais", oData.d.results);
 							//this.oStorage.put("materiais",oData.d.results);
@@ -786,6 +791,11 @@ sap.ui.define([
 					
 					var oUnit = [], 
 						oQuantity = 0; 
+						
+					if(!oObject.Processed){
+						oObject.Processed = false
+					}
+					
 					if(oObject.MaterialBaseUnit) {
 						oUnit.push({ Unit: oObject.MaterialBaseUnit });
 						oObject.UnitCount = oObject.MaterialBaseUnit;
