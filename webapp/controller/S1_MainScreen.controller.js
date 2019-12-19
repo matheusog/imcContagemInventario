@@ -958,6 +958,7 @@ sap.ui.define([
 			materiaisStorage.forEach(element => {
 				delete element.Input;
 				delete element.InputIncrement;
+				delete element.Processed;
 				if(element.UnitCount !== ""){
 					element.QuantityCount = element.QuantityCount.toString();
 					listMateriaisEnviar.push(element);
