@@ -150,6 +150,12 @@
 					icon="sap-icon://activities" />
 				<ToolbarSpacer visible="{= !${device>phone}}" />
 				<Button 
+					icon="sap-icon://save"
+					press="onPressS2_Save"
+					text="{i18n>s2BtnSave}" 
+					tooltip="{i18n>s2BtnSave}"
+					type="Transparent" />
+				<Button 
 					icon="sap-icon://synchronize"
 					press="onPressS2_Sync"
 					text="{i18n>s2BtnSync}" 

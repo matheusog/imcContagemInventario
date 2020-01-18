@@ -884,7 +884,7 @@ sap.ui.define([
 			this._navPage("S3_ListarMateriais", sType, true);
 		}, 
 		
-		fetchToken: function(){
+		fetchToken: function(bFinish){
 			var sURL = `${this._sServiceURL}/$metadata`
 			var oRequest = new XMLHttpRequest();
 			oRequest.open('GET',sURL,'async');
@@ -892,7 +892,7 @@ sap.ui.define([
 			
 			oRequest.onload = e => {
 				var token = oRequest.getResponseHeader("x-csrf-token");
-				this.sendPost(token);
+				this.sendPost(token, bFinish);
 			};
 			
 			oRequest.onerror = e =>{
@@ -908,7 +908,7 @@ sap.ui.define([
 			oRequest.send();
 		},
 		
-		sendPost: function(token){
+		sendPost: function(token, bFinish){
 			var sURL = `${this._sServiceURL}${this._sEntityPlanDate}`
 			var oRequest = new XMLHttpRequest();
 			oRequest.open('POST',sURL,'async');
@@ -977,6 +977,23 @@ sap.ui.define([
 			oRequest.send(jsonDataSend);
 		},
 		
+		//FH - 18.01.2020 - MOG - Melhoria Inventário (MM10) - Inicio
+		onPressS2_Save function(oEvent) {
+		/*	MessageBox.show(
+						this._oResourceBundle.getText("msgS2ConfirmSave"), {
+						icon: MessageBox.Icon.QUESTION,
+						title: this._oResourceBundle.getText("msgConfirm"),
+						actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+						onClose: sButton => { 
+							if(sButton === MessageBox.Action.YES){
+								this._oViewMain.setProperty("/busy", true);
+								this.fetchToken(false);
+							}
+						}
+			});*/
+		},
+		//FH - 18.01.2020 - MOG - Melhoria Inventário (MM10) - Fim
+		
 		onPressS2_Sync: function(oEvent){
 			MessageBox.show(
 						"Deseja realmente finalizar o inventário?", {
@@ -986,7 +1003,10 @@ sap.ui.define([
 						onClose: sButton => { 
 							if(sButton === MessageBox.Action.YES){
 								this._oViewMain.setProperty("/busy", true);
-								this.fetchToken();
+							//FH - 18.01.2020 - MOG - Melhoria Inventário (MM10) - Inicio
+							//	this.fetchToken();
+								this.fetchToken(true);
+							//FH - 18.01.2020 - MOG - Melhoria Inventário (MM10) - Fim
 							}
 						}
 			});
