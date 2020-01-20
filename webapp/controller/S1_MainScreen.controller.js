@@ -265,17 +265,36 @@ sap.ui.define([
 			var bCompact = !!this.getView().$().closest(".sapUiSizeCompact").length;
 			
 			if(oData) {
-				MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
-					{
-						icon: sap.m.MessageBox.Icon.ERROR,
-						title: this._oResourceBundle.getText("msgError"),
-						actions: [sap.m.MessageBox.Action.CLOSE],
-						id: "msgGenericError",
-						details: oData,
-						styleClass: bCompact ? "sapUiSizeCompact" : "",
-						contentWidth: "auto"
-	
-				});
+				if(oData.error && oData.error.message){
+					var sMsg = oData.error.message;
+					if(oData.error.message.value) {
+						sMsg = oData.error.message.value;
+					}
+                    MessageBox.show( sMsg, 
+						{
+							icon: sap.m.MessageBox.Icon.ERROR,
+							title: this._oResourceBundle.getText("msgError"),
+							actions: [sap.m.MessageBox.Action.CLOSE],
+							id: "msgGenericError",
+							details: oData,
+							styleClass: bCompact ? "sapUiSizeCompact" : "",
+							contentWidth: "auto"
+
+					});
+				} else {
+
+					MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
+						{
+							icon: sap.m.MessageBox.Icon.ERROR,
+							title: this._oResourceBundle.getText("msgError"),
+							actions: [sap.m.MessageBox.Action.CLOSE],
+							id: "msgGenericError",
+							details: oData,
+							styleClass: bCompact ? "sapUiSizeCompact" : "",
+							contentWidth: "auto"
+
+					});
+				}
 			} else {
 				MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
 					{
@@ -290,10 +309,14 @@ sap.ui.define([
 			}
 		}, 
 		
-		_getContagemInitFilter : function(sCentro) {
+		_getContagemInitFilter : function(sCentro, bInvLoad) {
 			var sFilter = 
 				"(PostingDate lt datetime'0001-01-01T00:00:00')";
-				
+			
+			if(bInvLoad) {
+				sFilter = `${sFilter} and CountFinished eq false`
+			}
+			
 			return sCentro && sCentro.trim() !== '' ?
 				`(${sFilter} and Plant eq '${sCentro}')` : 
 				sFilter;
@@ -561,7 +584,7 @@ sap.ui.define([
 				
 				if(oResponse.status === 200) {
 					if(oData && oData.d && oData.d.results) {
-						if(resolve){
+						if(resolve && oData.d.results.length > 0){
 							oData.d.results.forEach(element => {
 								element.QuantityCount = undefined;
 								element.Processed = false;
@@ -569,6 +592,21 @@ sap.ui.define([
 							this._oViewListaMaterial.setProperty("/materiais", oData.d.results);
 							//this.oStorage.put("materiais",oData.d.results);
 							resolve(oResponse);
+						} else {
+							var bCompact = !!this.getView().$().closest(".sapUiSizeCompact").length;
+							var sMsg = this._oViewMain.getProperty("/viewType") === "ReCont" ?
+								this._oResourceBundle.getText("msgNoRecountAvailable") :
+								this._oResourceBundle.getText("msgNoCountAvailable");
+							MessageBox.show( sMsg, 
+								{
+									icon: sap.m.MessageBox.Icon.ERROR,
+									title: this._oResourceBundle.getText("msgError"),
+									actions: [sap.m.MessageBox.Action.CLOSE],
+									id: "msgInvError",
+									//details: sMsg, 
+									styleClass: bCompact ? "sapUiSizeCompact" : ""
+							});
+							reject(oResponse);
 						}
 					}
 				} else {
@@ -587,13 +625,15 @@ sap.ui.define([
 			
 			if(this._oViewMain.getProperty("/viewType") === "ReCont"){
 				sURL = sCentro ?
-					`${this._sServiceURL}${this._sEntityInvent}?$format=json&$filter=((PostingDate lt datetime'0001-01-01T00:00:00' and PhysicalInventoryLastCountDate gt datetime'0001-01-01T00:00:00')and Plant eq '${sCentro}')&$orderby=MaterialName` :
+					`${this._sServiceURL}${this._sEntityInvent}?$format=json&` +
+					`$filter=((PostingDate lt datetime'0001-01-01T00:00:00' and PhysicalInventoryLastCountDate gt datetime'0001-01-01T00:00:00')and Plant eq '${sCentro}'` + 
+					` and RecountAllowed eq true)&$orderby=MaterialName` :
 					this._sServiceURL + this._sEntityInvent;
 				this.oStorage.remove("isRecontagem");
 				this.oStorage.put("isRecontagem", true);
 			}else{
 				sURL = sCentro ?
-					this._sServiceURL + this._sEntityInvent + "?$format=json&$filter=" + this._getContagemInitFilter(sCentro) + '&$orderby=MaterialName':
+					this._sServiceURL + this._sEntityInvent + "?$format=json&$filter=" + this._getContagemInitFilter(sCentro, true) + '&$orderby=MaterialName':
 					this._sServiceURL + this._sEntityInvent;
 				this.oStorage.remove("isRecontagem");
 				this.oStorage.put("isRecontagem", false);
@@ -927,6 +967,8 @@ sap.ui.define([
 						actions: [sap.m.MessageBox.Action.CLOSE]
 					});
 				}else{
+					this._genericErrorDisplay(oRequest);
+					/*
 					MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
 					{
 						icon: sap.m.MessageBox.Icon.ERROR,
@@ -935,12 +977,14 @@ sap.ui.define([
 						id: "msgGenericError",
 						details: oRequest.response,
 						contentWidth: "auto"
-				});
+					});*/
 				}		
 			};
 			
 			oRequest.onerror = e =>{
 				this._oViewMain.setProperty("/busy", false);
+				this._genericErrorDisplay(oRequest);
+				/*
 				MessageBox.show( this._oResourceBundle.getText("msgGenericError"), 
 					{
 						icon: sap.m.MessageBox.Icon.ERROR,
@@ -951,6 +995,7 @@ sap.ui.define([
 						contentWidth: "auto"
 	
 				});
+				*/
 			};
 			var centroStorage = this.oStorage.get("centro");
 			var materiaisStorage = this.oStorage.get("materiais");
@@ -972,14 +1017,15 @@ sap.ui.define([
 				"PhysicalInventoryLastCountDate": null,
 				"InventoryCount": materiaisStorage.length,
 				"isRecontagem": this.oStorage.get("isRecontagem"),
+				"finishCount": bFinish, 
 				"to_InventoryCount": listMateriaisEnviar,
 			});
 			oRequest.send(jsonDataSend);
 		},
 		
 		//FH - 18.01.2020 - MOG - Melhoria Inventário (MM10) - Inicio
-		onPressS2_Save function(oEvent) {
-		/*	MessageBox.show(
+		onPressS2_Save: function(oEvent) {
+			MessageBox.show(
 						this._oResourceBundle.getText("msgS2ConfirmSave"), {
 						icon: MessageBox.Icon.QUESTION,
 						title: this._oResourceBundle.getText("msgConfirm"),
@@ -990,7 +1036,7 @@ sap.ui.define([
 								this.fetchToken(false);
 							}
 						}
-			});*/
+			});
 		},
 		//FH - 18.01.2020 - MOG - Melhoria Inventário (MM10) - Fim
 		

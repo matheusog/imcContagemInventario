@@ -134,7 +134,9 @@
 						<OverflowToolbarLayoutData priority="NeverOverflow" />
 					</layoutData>
 				</Button>-->
-				<ToolbarSpacer/>
+				<!-- FH - MOG - 18.01.2020 - Melhorias Inv.(MM10) - Inicio
+				<ToolbarSpacer/> 
+					 FH - MOG - 18.01.2020 - Melhorias Inv.(MM10) - Fim -->
 				<Button
 					id="btn_PesquisaMaterial"
 					text="{i18n>s2BtnSearch}"
@@ -149,12 +151,14 @@
 					press="onPressS2_ListaMateriais" 
 					icon="sap-icon://activities" />
 				<ToolbarSpacer visible="{= !${device>phone}}" />
+				<!-- FH - MOG - 18.01.2020 - Melhorias Inv.(MM10) - Inicio -->
 				<Button 
 					icon="sap-icon://save"
 					press="onPressS2_Save"
 					text="{i18n>s2BtnSave}" 
 					tooltip="{i18n>s2BtnSave}"
 					type="Transparent" />
+				<!-- FH - MOG - 18.01.2020 - Melhorias Inv.(MM10) - Fim -->
 				<Button 
 					icon="sap-icon://synchronize"
 					press="onPressS2_Sync"
