@@ -50,7 +50,7 @@
     "targetFolder": "dist",
     "excludedFolders": [],
     "excludedFiles": [],
-    "lastBuildDateTime": "Thu, 19 Dec 2019 20:40:17 GMT"
+    "lastBuildDateTime": "Thu, 30 Jan 2020 16:33:34 GMT"
   },
   "mockpreview": {
     "mockUri": "/sap/opu/odata/sap/Z_MM_TEST_CDS",
