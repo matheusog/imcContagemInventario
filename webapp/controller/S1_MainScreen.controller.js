@@ -1005,13 +1005,16 @@ sap.ui.define([
 				delete element.Input;
 				delete element.InputIncrement;
 				delete element.Processed;
-				if(bFinish && element.UnitCount === ""){
-					element.UnitCount = element.MaterialBaseUnit;
+				if(bFinish && 
+					( element.UnitCount === "" || element.Quantity === undefined )){
+                    element.UnitCount = element.MaterialBaseUnit;
 					element.QuantityCount = 0;
-				}
+                }
 				if(element.UnitCount !== ""){
-					element.QuantityCount = element.QuantityCount.toString();
-					listMateriaisEnviar.push(element);
+					if(element.QuantityCount || element.QuantityCount === 0){
+						element.QuantityCount = String(element.QuantityCount);
+					}
+                    listMateriaisEnviar.push(element);
 				}
 			});
 			var jsonDataSend = JSON.stringify({
