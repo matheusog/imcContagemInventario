@@ -1000,10 +1000,15 @@ sap.ui.define([
 			var centroStorage = this.oStorage.get("centro");
 			var materiaisStorage = this.oStorage.get("materiais");
 			var listMateriaisEnviar =  [];
+			
 			materiaisStorage.forEach(element => {
 				delete element.Input;
 				delete element.InputIncrement;
 				delete element.Processed;
+				if(bFinish && element.UnitCount === ""){
+					element.UnitCount = element.MaterialBaseUnit;
+					element.QuantityCount = 0;
+				}
 				if(element.UnitCount !== ""){
 					element.QuantityCount = element.QuantityCount.toString();
 					listMateriaisEnviar.push(element);
