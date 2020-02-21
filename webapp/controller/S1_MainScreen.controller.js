@@ -1000,12 +1000,13 @@ sap.ui.define([
 			var centroStorage = this.oStorage.get("centro");
 			var materiaisStorage = this.oStorage.get("materiais");
 			var listMateriaisEnviar =  [];
+			var bRecontagem = this.oStorage.get("isRecontagem"); 
 			
 			materiaisStorage.forEach(element => {
 				delete element.Input;
 				delete element.InputIncrement;
 				delete element.Processed;
-				if(bFinish && 
+				if(bFinish && !bRecontagem &&
 					( element.UnitCount === "" || element.Quantity === undefined )){
                     element.UnitCount = element.MaterialBaseUnit;
 					element.QuantityCount = 0;
@@ -1024,7 +1025,7 @@ sap.ui.define([
 				"PostingDate": null,
 				"PhysicalInventoryLastCountDate": null,
 				"InventoryCount": materiaisStorage.length,
-				"isRecontagem": this.oStorage.get("isRecontagem"),
+				"isRecontagem": bRecontagem,
 				"finishCount": bFinish, 
 				"to_InventoryCount": listMateriaisEnviar,
 			});
