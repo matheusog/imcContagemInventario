@@ -1005,16 +1005,20 @@ sap.ui.define([
 			materiaisStorage.forEach(element => {
 				delete element.Input;
 				delete element.InputIncrement;
-				delete element.Processed;
+				//delete element.Processed;
 				if(bFinish && !bRecontagem &&
-					( element.UnitCount === "" || element.Quantity === undefined )){
-                    element.UnitCount = element.MaterialBaseUnit;
-					element.QuantityCount = 0;
+					!element.Processed ){ 
+					//( element.UnitCount === "" || element.Quantity === undefined )){
+                    element.UnitCount		= element.MaterialBaseUnit;
+					element.QuantityCount	= 0;
+					element.Processed		= true;
                 }
-				if(element.UnitCount !== ""){
+				//if(element.UnitCount !== ""){
+				if(element.Processed) {
 					if(element.QuantityCount || element.QuantityCount === 0){
 						element.QuantityCount = String(element.QuantityCount);
 					}
+					delete element.Processed;
                     listMateriaisEnviar.push(element);
 				}
 			});
