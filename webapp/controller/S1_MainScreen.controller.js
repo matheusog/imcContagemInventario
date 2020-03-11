@@ -822,7 +822,7 @@ sap.ui.define([
 		
 		_searchMaterial : function(sMaterial, resolve, reject) {
 			this._oViewContMaterial.setProperty("/material","");
-			
+			//this._oViewContMaterial.setProperty("/unidades", "");
 			this._oViewListaMaterial.getProperty("/materiais").forEach(
 				function(oObject, iIndex) {
 					if(oObject.Material !== sMaterial) {
@@ -856,14 +856,27 @@ sap.ui.define([
 				}.bind(this)
 			);
 			if(this._oViewContMaterial.getProperty("/material")) {
-				var oObject = this._oViewContMaterial.getProperty("/material");
-				if(oObject.QuantityCount > 0) {
+				var oMaterial = this._oViewContMaterial.getProperty("/material");
+				var oObject = $.extend({}, oMaterial);
+				if(oMaterial.QuantityCount > 0) {
 					MessageBox.show(
 							"Já existe contagem para este inventário, deseja substituir ou adicionar ?", {
 							icon: MessageBox.Icon.INFORMATION,
 							title: "Atenção!",
 							actions: ["Substituir", "Adicionar"],
-							onClose: sButton => { 
+							onClose:
+								function(sButton) { 
+									//Tratativa do problema de binding do Unit com combobox
+									oMaterial.Unit = oObject.Unit;
+									if(sButton == "Substituir"){
+										oObject.Input = oObject.QuantityCount;
+										oObject.QuantityCount = 0;
+									}
+									//this._defineInitialFocus("S3_ContarMaterial");
+									this._oViewContMaterial.setProperty("/material", oObject);
+									resolve();
+							    }.bind(this)
+							/*sButton => { 
 								if(sButton == "Substituir"){
 									oObject.Input = oObject.QuantityCount;
 									oObject.QuantityCount = 0;
@@ -871,7 +884,7 @@ sap.ui.define([
 								//this._defineInitialFocus("S3_ContarMaterial");
 								this._oViewContMaterial.setProperty("/material", oObject);
 								resolve();
-							}
+							}*/
 						});
 				} else {
 					resolve();

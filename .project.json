@@ -53,8 +53,8 @@
     "lastBuildDateTime": "Thu, 30 Jan 2020 16:33:34 GMT"
   },
   "mockpreview": {
-    "mockUri": "/sap/opu/odata/sap/Z_MM_TEST_CDS",
-    "metadataFilePath": "",
+    "mockUri": "/sap/opu/odata/sap/ZGW_MM_INVENTARIO_SRV/",
+    "metadataFilePath": "localService/metadata.xml",
     "loadJSONFiles": false,
     "loadCustomRequests": false,
     "mockRequestsFilePath": ""
