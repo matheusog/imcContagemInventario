@@ -25,10 +25,10 @@
       "path": "/sap/opu/odata",
       "target": {
         "type": "destination",
-        "name": "IMC_SFD",
+        "name": "IMC_SFD_300",
         "entryPath": "/sap/opu/odata"
       },
-      "description": "IMC Gateway/Fiori SFD 150"
+      "description": "IMC Gateway/Fiori SFD 310"
     }
   ],
   "sendWelcomeFileRedirect": true
