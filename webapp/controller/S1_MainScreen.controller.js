@@ -502,7 +502,7 @@ sap.ui.define([
 			var qtdCount = parseFloat(this._oViewContMaterial.getProperty("/material/QuantityCount".replace(',','.'))) || 0;
 			var qtdSomar = parseFloat(this._oViewContMaterial.getProperty("/material/InputIncrement").replace(',','.')) || 0;
 			this._oViewContMaterial.setProperty("/material/QuantityCount",qtdCount+qtdSomar);
-			this._oViewContMaterial.setProperty("/material/Input",this._oViewContMaterial.getProperty("/material/QuantityCount"));
+			this._oViewContMaterial.setProperty("/material/Input",qtdCount+qtdSomar);
 			this._oViewContMaterial.setProperty("/material/InputIncrement","");
 			this._oViewContMaterial.setProperty("/material/Processed", true);
 			
