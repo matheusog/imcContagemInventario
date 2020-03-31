@@ -506,7 +506,19 @@ sap.ui.define([
 			this._oViewContMaterial.setProperty("/material/InputIncrement","");
 			this._oViewContMaterial.setProperty("/material/Processed", true);
 			
-			this._oViewListaMaterial.getProperty("/materiais").forEach(
+			var MaterialSelect = this._oViewContMaterial.getProperty("/material/Material");
+			var listX = this._oViewListaMaterial.getProperty("/materiais");
+			for(let i = 0; i < listX.length; i++){
+				if(listX[i].Material == MaterialSelect){
+                    var contagemMaterial = this._oViewContMaterial.getProperty("/material");
+                    var sPath = "/materiais/"+i;
+                    //this._oViewListaMaterial.setProperty(sPath,contagemMaterial);
+                    listX[i] = contagemMaterial;
+                    break;
+				}		
+			}
+			
+			/*this._oViewListaMaterial.getProperty("/materiais").forEach(
 				function(oObject, iIndex) {
 					if(oObject.Material !== this._oViewContMaterial.getProperty("/material/Material" )) {
 						return; 
@@ -517,7 +529,7 @@ sap.ui.define([
 					var sPath = "/materiais/" + iIndex;
 					this._oViewListaMaterial.setProperty(sPath, oObject);
 				}.bind(this)
-			);
+			);*/
 
 			this._back();
 			//this._oViewContagem.setProperty("/inMaterial", '');
