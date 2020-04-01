@@ -339,7 +339,7 @@ sap.ui.define([
 				} else {
 					function navToOffline(sKey) {
 						this._oNavContainer.to(this.getView().createId(sKey));
-						this._defineInitialFocus(sKey);
+						//this._defineInitialFocus(sKey);
 						
 						if(this._oToolPage.getSideExpanded()) {
 							this._oToolPage.setSideExpanded(!this._oToolPage.getSideExpanded());
