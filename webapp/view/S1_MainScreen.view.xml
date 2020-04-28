@@ -121,7 +121,7 @@
 					id="txb_Codigo"
 					value="{viewContagem>/inMaterial}"
 					type="Number"
-					submit="._onSubmitMaterial"
+					submit="onPressS2_PesquisaMaterial"
 					placeholder="{i18n>s2FldPhMaterial}"
 					>
 				</Input>
@@ -289,7 +289,7 @@
 					growingThreshold="300"
 					busyIndicatorDelay="500"
 					id="listMaterial"
-					items="{viewListaMaterial>/materiais}">
+					items="{viewListaMaterial>/materiaisBusca}">
 					<headerToolbar>
 						<OverflowToolbar>
 							<Title text="{i18n>s3ListTitle}" level="H2"/>

@@ -228,6 +228,11 @@ sap.ui.define([
 		
 		_handleSearchMaterial : function(oEvent) {
 			var sQuery = oEvent.getParameter("query");	
+			var lista = this.oStorage.get("materiais").filter((Item) => {
+				return Item.Material.includes(sQuery) || Item.MaterialName.includes(sQuery);
+			});
+			this._oViewListaMaterial.setProperty("/materiaisBusca", lista);
+			/*
 			//var sQuery = oEvent.getSource().getValue();
 			var oList = this.byId("listMaterial"); 
 			var oBinding = oList.getBinding("items");
@@ -254,7 +259,7 @@ sap.ui.define([
 			if(aFiltersCurrent){
 				aFiltersCurrent.forEach( oObj => aFilters.push(oObj) );
 			}
-			oBinding.filter(aFilters);
+			oBinding.filter(aFilters);*/
 		}, 
 		
 		_genericErrorDisplay : function(oResponse) {
@@ -329,6 +334,7 @@ sap.ui.define([
 			this._oViewContMaterial.setProperty("/material", {}); 
 			this._oViewContMaterial.setProperty("/unidades", []);
 			this._oViewListaMaterial.setProperty("/materiais", []);
+			this._oViewListaMaterial.setProperty("/materiaisBusca", []);
 		}, 
 		
 		_navPage : function(sKey, sType, bOffline) {
@@ -492,11 +498,6 @@ sap.ui.define([
 				this._onConfirmCentro(oEvent);
 			}
 		},
-		
-		_onSubmitMaterial: function(oEvent) {
-			//var sMaterial = oEvent.getParameter("value");
-			this.onPressS2_PesquisaMaterial();
-		}, 
 		
 		_onSubmitQuantity : function(oEvent) {
 			var qtdCount = parseFloat(this._oViewContMaterial.getProperty("/material/QuantityCount".replace(',','.'))) || 0;
@@ -835,6 +836,7 @@ sap.ui.define([
 		_searchMaterial : function(sMaterial, resolve, reject) {
 			this._oViewContMaterial.setProperty("/material","");
 			//this._oViewContMaterial.setProperty("/unidades", "");
+			var materialSelect = null;
 			this._oViewListaMaterial.getProperty("/materiais").forEach(
 				function(oObject, iIndex) {
 					if(oObject.Material !== sMaterial) {
@@ -865,8 +867,10 @@ sap.ui.define([
 					this._oViewContMaterial.setProperty("/unidades", oUnit);
 					this._oViewContMaterial.setProperty("/originalCount", oQuantity);
 					this._oViewContMaterial.setProperty("/material", oObject);
+					materialSelect = oObject;
 				}.bind(this)
 			);
+			this._oViewContMaterial.setProperty("/material",materialSelect);
 			if(this._oViewContMaterial.getProperty("/material")) {
 				var oMaterial = this._oViewContMaterial.getProperty("/material");
 				var oObject = $.extend({}, oMaterial);
@@ -946,6 +950,7 @@ sap.ui.define([
 		onPressS2_ListaMateriais: function(){
 			var sType = this._oViewMain.getProperty("/viewType");
 			this._oViewListaMaterial.refresh();
+			this._oViewListaMaterial.setProperty("/materiaisBusca", this._oViewListaMaterial.getProperty("/materiais"));
 			this._navPage("S3_ListarMateriais", sType, true);
 		}, 
 		
